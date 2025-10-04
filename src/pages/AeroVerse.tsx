@@ -1,75 +1,150 @@
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars, Environment, PerspectiveCamera } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Stars, Environment, Sphere, MeshDistortMaterial, Float, Text, Html } from "@react-three/drei";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Chrome as Home, Maximize2, Info, Orbit, Zap } from "lucide-react";
+import { Home, Maximize2, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useRef } from "react";
 import * as THREE from "three";
-import GalaxyParticles from "@/components/aeroverse/GalaxyParticles";
-import MeshmorphicSphere from "@/components/aeroverse/MeshmorphicSphere";
-import NebulaCloud from "@/components/aeroverse/NebulaCloud";
-import BlackHole from "@/components/aeroverse/BlackHole";
-import SolarFlare from "@/components/aeroverse/SolarFlare";
-import CosmicDust from "@/components/aeroverse/CosmicDust";
-import PostProcessingEffects from "@/components/aeroverse/PostProcessingEffects";
-import HolographicPanel from "@/components/aeroverse/HolographicPanel";
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
+const AnimatedSphere = ({ position, color, speed }: { position: [number, number, number], color: string, speed: number }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.elapsedTime * speed;
+      meshRef.current.rotation.y = state.clock.elapsedTime * speed * 0.5;
+      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * speed) * 0.5;
+    }
+  });
+
+  return (
+    <Float speed={speed} rotationIntensity={1} floatIntensity={2}>
+      <mesh ref={meshRef} position={position}>
+        <Sphere args={[1.5, 64, 64]}>
+          <MeshDistortMaterial
+            color={color}
+            attach="material"
+            distort={0.6}
+            speed={speed}
+            roughness={0.1}
+            metalness={0.8}
+            emissive={color}
+            emissiveIntensity={0.5}
+          />
+        </Sphere>
+      </mesh>
+    </Float>
+  );
+};
+
+const ParticleField = () => {
+  const particlesRef = useRef<THREE.Points>(null);
+  const count = 5000;
+
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    positions[i3] = (Math.random() - 0.5) * 30;
+    positions[i3 + 1] = (Math.random() - 0.5) * 30;
+    positions[i3 + 2] = (Math.random() - 0.5) * 30;
+
+    const color = new THREE.Color();
+    color.setHSL(Math.random() * 0.3 + 0.5, 0.8, 0.6);
+    colors[i3] = color.r;
+    colors[i3 + 1] = color.g;
+    colors[i3 + 2] = color.b;
+  }
+
+  useFrame((state) => {
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+    }
+  });
+
+  return (
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={count}
+          array={colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial size={0.1} vertexColors sizeAttenuation transparent opacity={0.8} blending={THREE.AdditiveBlending} />
+    </points>
+  );
+};
+
+const EnergyRing = ({ radius, color, position }: { radius: number, color: string, position: [number, number, number] }) => {
+  const ringRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (ringRef.current) {
+      ringRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+      ringRef.current.rotation.y = state.clock.elapsedTime * 0.3;
+    }
+  });
+
+  return (
+    <mesh ref={ringRef} position={position} rotation={[Math.PI / 2, 0, 0]}>
+      <torusGeometry args={[radius, 0.1, 16, 100]} />
+      <meshStandardMaterial
+        color={color}
+        emissive={color}
+        emissiveIntensity={2}
+        transparent
+        opacity={0.6}
+      />
+    </mesh>
+  );
+};
 
 const Scene = () => {
-  const [particleCount, setParticleCount] = useState(0);
-  const [fps, setFps] = useState(60);
-
-  useEffect(() => {
-    setParticleCount(67000);
-  }, []);
-
   return (
     <>
       <color attach="background" args={['#000510']} />
-      <fog attach="fog" args={['#000510', 10, 50]} />
+      <fog attach="fog" args={['#000510', 15, 40]} />
 
-      <ambientLight intensity={0.1} />
-      <pointLight position={[10, 10, 10]} intensity={2} color="#00d4ff" castShadow />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={2} color="#00d4ff" />
       <pointLight position={[-10, -10, -10]} intensity={1.5} color="#ff006e" />
-      <pointLight position={[0, 15, 0]} intensity={1.8} color="#9b5de5" />
-      <spotLight position={[15, 15, 15]} angle={0.3} penumbra={1} intensity={2} color="#00f5ff" castShadow />
+      <spotLight position={[0, 15, 0]} angle={0.5} penumbra={1} intensity={1.5} color="#9b5de5" />
 
-      <Stars radius={100} depth={50} count={8000} factor={6} saturation={0.8} fade speed={1.5} />
+      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0.8} fade speed={1} />
 
-      <GalaxyParticles />
-      <CosmicDust />
+      <ParticleField />
 
-      <MeshmorphicSphere position={[0, 0, 0]} />
-      <MeshmorphicSphere position={[-8, 2, -3]} />
+      <AnimatedSphere position={[0, 0, 0]} color="#00d4ff" speed={0.5} />
+      <AnimatedSphere position={[-5, 2, -3]} color="#9b5de5" speed={0.7} />
+      <AnimatedSphere position={[5, -2, -3]} color="#ff006e" speed={0.6} />
 
-      <NebulaCloud position={[5, 3, -8]} scale={4} />
-      <NebulaCloud position={[-6, -2, -6]} scale={3.5} />
-      <NebulaCloud position={[0, 5, -10]} scale={5} />
+      <EnergyRing radius={4} color="#00d4ff" position={[0, 0, 0]} />
+      <EnergyRing radius={5} color="#9b5de5" position={[0, 0, 0]} />
+      <EnergyRing radius={6} color="#ff006e" position={[0, 0, 0]} />
 
-      <SolarFlare position={[-10, 4, -4]} />
-      <SolarFlare position={[12, -3, -7]} />
-
-      <BlackHole />
-
-      <HolographicPanel
-        position={[-5, 4, 3]}
-        title="PARTICLES"
-        value={particleCount.toLocaleString()}
-        color="#00d4ff"
-      />
-      <HolographicPanel
-        position={[5, 4, 3]}
-        title="FPS"
-        value={fps.toString()}
-        color="#9b5de5"
-      />
-      <HolographicPanel
-        position={[0, -4, 3]}
-        title="STATUS"
-        value="ACTIVE"
-        color="#ff006e"
-      />
+      <Float speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
+        <Text
+          position={[0, 4, -2]}
+          fontSize={0.8}
+          color="#00d4ff"
+          anchorX="center"
+          anchorY="middle"
+          font="https://fonts.gstatic.com/s/raleway/v28/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCIPrE.woff"
+        >
+          AEROVERSE
+        </Text>
+      </Float>
 
       <Environment preset="night" />
       <OrbitControls
@@ -77,14 +152,18 @@ const Scene = () => {
         enablePan={true}
         enableRotate={true}
         autoRotate
-        autoRotateSpeed={0.3}
-        maxDistance={25}
-        minDistance={2}
-        dampingFactor={0.05}
-        rotateSpeed={0.5}
+        autoRotateSpeed={0.5}
+        maxDistance={20}
+        minDistance={3}
       />
 
-      <PostProcessingEffects />
+      <EffectComposer>
+        <Bloom
+          intensity={1.5}
+          luminanceThreshold={0.2}
+          luminanceSmoothing={0.9}
+        />
+      </EffectComposer>
     </>
   );
 };
@@ -92,6 +171,7 @@ const Scene = () => {
 const AeroVerse = () => {
   const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -103,50 +183,8 @@ const AeroVerse = () => {
     }
   };
 
-  const [showInfo, setShowInfo] = useState(false);
-
-  const features = [
-    {
-      icon: Zap,
-      title: "67,000+ Particles",
-      description: "GPU-accelerated particle systems with custom GLSL shaders for maximum performance",
-      delay: 0.2
-    },
-    {
-      icon: Orbit,
-      title: "Meshmorphic Geometries",
-      description: "Real-time vertex displacement with procedural noise and wave functions",
-      delay: 0.4
-    },
-    {
-      icon: Zap,
-      title: "Dynamic Nebulas",
-      description: "Volumetric fog with fractal brownian motion for realistic cosmic clouds",
-      delay: 0.6
-    },
-    {
-      icon: Orbit,
-      title: "Black Hole Simulation",
-      description: "Event horizon with gravitational lensing and accretion disk effects",
-      delay: 0.8
-    },
-    {
-      icon: Zap,
-      title: "Post-Processing",
-      description: "Bloom, chromatic aberration, vignette, and film grain for cinematic quality",
-      delay: 1.0
-    },
-    {
-      icon: Orbit,
-      title: "Holographic UI",
-      description: "Real-time 3D interface elements with transparency and glow effects",
-      delay: 1.2
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Fixed Navigation */}
       <motion.div
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -175,10 +213,8 @@ const AeroVerse = () => {
         </div>
       </motion.div>
 
-      {/* 3D Canvas */}
       <div className="fixed inset-0">
         <Canvas
-          shadows
           camera={{ position: [0, 0, 12], fov: 75 }}
           gl={{
             antialias: true,
@@ -192,7 +228,6 @@ const AeroVerse = () => {
         </Canvas>
       </div>
 
-      {/* Info Toggle */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -210,54 +245,42 @@ const AeroVerse = () => {
         </Button>
       </motion.div>
 
-      {/* Feature Cards Overlay */}
       {showInfo && (
-        <div className="fixed bottom-24 left-8 right-8 z-30 pointer-events-none">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 pointer-events-auto"
-          >
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: feature.delay }}
-                  className="bg-background/20 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-5 hover:border-cyan-500/60 hover:bg-background/30 transition-all duration-300 shadow-[0_0_30px_rgba(0,212,255,0.1)]"
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-                      <Icon className="h-5 w-5 text-cyan-400" />
-                    </div>
-                    <h3 className="text-base font-bold text-cyan-300">{feature.title}</h3>
-                  </div>
-                  <p className="text-xs text-foreground/70 leading-relaxed">{feature.description}</p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.4 }}
-            className="mt-6 text-center bg-background/20 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4"
-          >
-            <p className="text-purple-300 text-sm font-medium mb-1">
-              🎮 Interactive Controls
-            </p>
-            <p className="text-foreground/60 text-xs">
-              Click & Drag to Rotate • Scroll to Zoom • Right-Click to Pan • Experience Real-Time GPU Rendering
-            </p>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          className="fixed bottom-24 left-8 right-8 z-30 max-w-4xl mx-auto"
+        >
+          <div className="bg-background/20 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
+            <h2 className="text-2xl font-bold text-cyan-300 mb-4">Welcome to the AeroVerse</h2>
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h3 className="text-cyan-400 font-semibold mb-2">Features:</h3>
+                <ul className="text-foreground/70 space-y-1">
+                  <li>• 5,000+ Interactive Particles</li>
+                  <li>• Dynamic Morphing Spheres</li>
+                  <li>• Energy Ring Systems</li>
+                  <li>• Real-time Lighting & Shadows</li>
+                  <li>• Bloom Post-Processing</li>
+                  <li>• 3D Text & Holographic UI</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-cyan-400 font-semibold mb-2">Controls:</h3>
+                <ul className="text-foreground/70 space-y-1">
+                  <li>• Click & Drag: Rotate view</li>
+                  <li>• Scroll: Zoom in/out</li>
+                  <li>• Right-click & Drag: Pan</li>
+                  <li>• Auto-rotation enabled</li>
+                  <li>• GPU accelerated rendering</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       )}
 
-      {/* Performance Stats */}
       <motion.div
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -271,12 +294,12 @@ const AeroVerse = () => {
             <span className="text-green-400 font-mono">WebGL 2.0</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-foreground/60">Shaders:</span>
-            <span className="text-green-400 font-mono">GLSL ES 3.0</span>
+            <span className="text-foreground/60">Particles:</span>
+            <span className="text-green-400 font-mono">10,000+</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-foreground/60">Mode:</span>
-            <span className="text-green-400 font-mono">GPU Accelerated</span>
+            <span className="text-foreground/60">Status:</span>
+            <span className="text-green-400 font-mono">ACTIVE</span>
           </div>
         </div>
       </motion.div>
