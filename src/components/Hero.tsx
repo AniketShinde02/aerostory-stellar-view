@@ -1,8 +1,11 @@
 import heroImage from "@/assets/hero-space.jpg";
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   const scrollToContent = () => {
     const element = document.getElementById("solar-storms");
     if (element) {
@@ -37,15 +40,24 @@ const Hero = () => {
           Journey through the cosmos and discover how stellar phenomena shape our world. 
           Experience the beauty and power of space weather like never before.
         </p>
-        <Button
-          onClick={scrollToContent}
-          size="lg"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 py-6 text-lg animate-fade-in shadow-lg hover:shadow-[var(--glow-primary)] transition-all duration-300"
-          style={{ animationDelay: "0.6s" }}
-        >
-          Begin Your Journey
-          <ArrowDown className="ml-2 animate-float" />
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <Button
+            onClick={scrollToContent}
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-[var(--glow-primary)] transition-all duration-300"
+          >
+            Begin Your Journey
+            <ArrowDown className="ml-2 animate-float" />
+          </Button>
+          <Button
+            onClick={() => navigate('/aeroverse')}
+            size="lg"
+            className="bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90 text-primary-foreground rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-[var(--glow-accent)] transition-all duration-300 animate-shimmer bg-[length:200%_100%]"
+          >
+            Enter the AeroVerse
+            <Sparkles className="ml-2 animate-glow" />
+          </Button>
+        </div>
       </div>
 
       {/* Scroll Indicator */}
