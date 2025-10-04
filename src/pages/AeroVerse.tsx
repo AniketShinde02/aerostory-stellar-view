@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars, Environment, PerspectiveCamera } from "@react-three/drei";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Home, Maximize2, Info, Orbit, Zap } from "lucide-react";
+import { Chrome as Home, Maximize2, Info, Orbit, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
