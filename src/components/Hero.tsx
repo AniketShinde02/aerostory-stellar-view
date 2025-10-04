@@ -1,7 +1,7 @@
-import heroImage from "@/assets/hero-space.jpg";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Galaxy from "./Galaxy";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -15,47 +15,60 @@ const Hero = () => {
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <img
-          src={heroImage}
-          alt="Earth from space with stellar phenomena"
-          className="w-full h-full object-cover opacity-60"
+      {/* Galaxy Background */}
+      <div className="absolute inset-0" style={{ zIndex: 0 }}>
+        <Galaxy 
+          mouseInteraction={true}
+          mouseRepulsion={true}
+          density={2.0}
+          glowIntensity={0.8}
+          saturation={1.0}
+          hueShift={140}
+          twinkleIntensity={0.3}
+          rotationSpeed={0.05}
+          repulsionStrength={2.0}
+          autoCenterRepulsion={0}
+          starSpeed={0.2}
+          speed={0.3}
+          transparent={false}
+          focal={[0.5, 0.5]}
+          rotation={[1.0, 0.0]}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background"></div>
       </div>
 
-      {/* Star Field */}
-      <div className="absolute inset-0 star-field opacity-30"></div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-glow animate-fade-in">
-          Stellar Stories
+      <div className="relative text-center px-6 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
+        {/* React Bits style tag */}
+        <div className="mb-6 animate-fade-in">
+          <span className="inline-flex items-center gap-2 bg-black/60 backdrop-blur-sm border border-gray-800/50 rounded-full px-4 py-2 text-sm text-white/80">
+            <Sparkles className="w-4 h-4" />
+            New Experience
+          </span>
+        </div>
+        
+        {/* Main headline */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white animate-fade-in leading-tight" style={{ animationDelay: "0.2s" }}>
+          Bring the cosmos to you,<br />
+          with one line of code
         </h1>
-        <h2 className="text-2xl md:text-4xl mb-8 text-primary/90 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          Space Weather Through the Eyes of Earthlings
-        </h2>
-        <p className="text-lg md:text-xl text-foreground/80 mb-12 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: "0.4s" }}>
-          Journey through the cosmos and discover how stellar phenomena shape our world. 
-          Experience the beauty and power of space weather like never before.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
+        
+        {/* Action buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
           <Button
             onClick={scrollToContent}
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-[var(--glow-primary)] transition-all duration-300"
+            className="bg-white text-black hover:bg-gray-100 rounded-full px-8 py-4 text-lg font-semibold transition-all duration-200"
           >
-            Begin Your Journey
-            <ArrowDown className="ml-2 animate-float" />
+            Get Started
           </Button>
           <Button
             onClick={() => navigate('/aeroverse')}
             size="lg"
-            className="bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90 text-primary-foreground rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-[var(--glow-accent)] transition-all duration-300 animate-shimmer bg-[length:200%_100%]"
+            variant="outline"
+            className="bg-transparent border border-gray-600 text-white hover:bg-white/10 rounded-full px-8 py-4 text-lg font-semibold transition-all duration-200"
           >
-            Enter the AeroVerse
-            <Sparkles className="ml-2 animate-glow" />
+            Listen Story
           </Button>
         </div>
       </div>

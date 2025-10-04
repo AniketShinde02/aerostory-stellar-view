@@ -172,24 +172,25 @@ const AeroVerse = () => {
         animate={{ y: 0, opacity: 1 }}
         className="fixed top-0 left-0 right-0 z-50 bg-background/20 backdrop-blur-md border-b border-border/50"
       >
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-glow">AeroVerse</h1>
-          <div className="flex gap-3">
+        <div className="container mx-auto px-4 xs:px-6 sm:px-8 py-3 xs:py-4 flex items-center justify-between">
+          <h1 className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold text-glow">AeroVerse</h1>
+          <div className="flex gap-2 xs:gap-3">
             <Button
               onClick={toggleFullscreen}
               variant="outline"
               size="icon"
-              className="border-primary/50 hover:border-primary hover:bg-primary/10"
+              className="border-primary/50 hover:border-primary hover:bg-primary/10 w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10"
             >
-              <Maximize2 className="h-4 w-4" />
+              <Maximize2 className="h-3 w-3 xs:h-4 xs:w-4" />
             </Button>
             <Button
               onClick={() => navigate('/')}
               variant="outline"
-              className="border-primary/50 hover:border-primary hover:bg-primary/10"
+              className="border-primary/50 hover:border-primary hover:bg-primary/10 text-xs xs:text-sm px-2 xs:px-3 py-1.5 xs:py-2"
             >
-              <Home className="mr-2 h-4 w-4" />
-              Back to Home
+              <Home className="mr-1 xs:mr-2 h-3 w-3 xs:h-4 xs:w-4" />
+              <span className="hidden xs:inline">Back to Home</span>
+              <span className="xs:hidden">Home</span>
             </Button>
           </div>
         </div>
@@ -205,13 +206,13 @@ const AeroVerse = () => {
       </div>
 
       {/* Feature Cards Overlay */}
-      <div className="relative z-10 min-h-screen flex items-end pb-20">
-        <div className="container mx-auto px-6">
+      <div className="relative z-10 min-h-screen flex items-end pb-12 xs:pb-16 sm:pb-20 lg:pb-24">
+        <div className="container mx-auto px-4 xs:px-6 sm:px-8">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-4"
+            className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-6"
           >
             {features.map((feature, index) => (
               <motion.div
@@ -219,10 +220,10 @@ const AeroVerse = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: feature.delay }}
-                className="bg-card/30 backdrop-blur-md border border-primary/20 rounded-xl p-6 hover:border-primary/50 hover:bg-card/40 transition-all duration-300 hover:shadow-[var(--glow-primary)]"
+                className="bg-card/30 backdrop-blur-md border border-primary/20 rounded-lg xs:rounded-xl p-4 xs:p-5 sm:p-6 hover:border-primary/50 hover:bg-card/40 transition-all duration-300 hover:shadow-[var(--glow-primary)]"
               >
-                <h3 className="text-lg font-semibold text-primary mb-2">{feature.title}</h3>
-                <p className="text-sm text-foreground/70">{feature.description}</p>
+                <h3 className="text-sm xs:text-base sm:text-lg font-semibold text-primary mb-2 xs:mb-3">{feature.title}</h3>
+                <p className="text-xs xs:text-sm text-foreground/70 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -231,9 +232,9 @@ const AeroVerse = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="mt-8 text-center"
+            className="mt-6 xs:mt-8 text-center px-4 xs:px-0"
           >
-            <p className="text-foreground/60 text-sm">
+            <p className="text-foreground/60 text-xs xs:text-sm leading-relaxed">
               Click and drag to rotate • Scroll to zoom • Experience the cosmos in 3D
             </p>
           </motion.div>

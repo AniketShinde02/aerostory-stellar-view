@@ -12,6 +12,25 @@ export default {
         "2xl": "1400px",
       },
     },
+    screens: {
+      'xs': '475px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+      '3xl': '1920px',
+      '4xl': '2560px',
+      '5xl': '3840px',
+      // Mobile-first approach
+      'mobile': {'raw': '(max-width: 767px)'},
+      'tablet': {'raw': '(min-width: 768px) and (max-width: 1023px)'},
+      'desktop': {'raw': '(min-width: 1024px)'},
+      // Ultra-wide screens
+      'ultrawide': {'raw': '(min-width: 2560px)'},
+      // High DPI displays
+      'retina': {'raw': '(-webkit-min-device-pixel-ratio: 2)'},
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
