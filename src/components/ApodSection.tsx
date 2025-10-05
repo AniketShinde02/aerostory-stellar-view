@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Camera, Clock, ExternalLink, RefreshCw, Calendar, Image as ImageIcon, Video, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useApod } from "@/hooks/useNasaApi";
@@ -26,9 +27,44 @@ const ApodSection = ({ id }: ApodSectionProps) => {
     return (
       <section id={id} className="py-12 xs:py-16 sm:py-20 lg:py-24 xl:py-28 px-4 xs:px-6 sm:px-8 lg:px-12">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-foreground/70">Loading today's space image...</p>
+          {/* Section Header Skeleton */}
+          <div className="text-center mb-8 xs:mb-10 sm:mb-12 lg:mb-16">
+            <Skeleton className="h-12 md:h-16 lg:h-20 xl:h-24 w-3/4 mx-auto mb-4" />
+            <Skeleton className="h-6 w-2/3 mx-auto" />
+          </div>
+
+          {/* Content Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 xs:gap-8 sm:gap-10 lg:gap-12">
+            {/* Image/Video Skeleton */}
+            <div className="lg:col-span-3">
+              <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-4 xs:p-6">
+                <Skeleton className="aspect-video w-full rounded-lg" />
+              </Card>
+            </div>
+
+            {/* Description Skeleton */}
+            <div className="lg:col-span-2 space-y-4 xs:space-y-6">
+              <div>
+                <Skeleton className="h-8 w-1/2 mb-3" />
+                <Skeleton className="h-6 w-3/4 mb-4" />
+                <Skeleton className="h-4 w-1/3" />
+              </div>
+              
+              <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-4 xs:p-6">
+                <Skeleton className="h-6 w-1/3 mb-3" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <Skeleton className="h-4 w-4/5" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </Card>
+              
+              <div className="flex flex-col sm:flex-row gap-3 xs:gap-4">
+                <Skeleton className="h-10 flex-1" />
+                <Skeleton className="h-10 flex-1" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -80,11 +116,11 @@ const ApodSection = ({ id }: ApodSectionProps) => {
         </div>
 
         {/* APOD Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 xs:gap-8 sm:gap-10 lg:gap-12">
-          {/* Image/Video */}
-          <div className="relative">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 xs:gap-8 sm:gap-10 lg:gap-12">
+          {/* Image/Video - Larger */}
+          <div className="lg:col-span-3">
             <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-4 xs:p-6 overflow-hidden">
-              <div className="relative aspect-video bg-black/50 rounded-lg overflow-hidden max-w-lg mx-auto">
+              <div className="relative aspect-video bg-black/50 rounded-lg overflow-hidden">
                 {imageLoading && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -148,8 +184,8 @@ const ApodSection = ({ id }: ApodSectionProps) => {
             </Card>
           </div>
 
-          {/* Description */}
-          <div className="space-y-4 xs:space-y-6">
+          {/* Description - Smaller sidebar */}
+          <div className="lg:col-span-2 space-y-4 xs:space-y-6">
             {/* Title and Date */}
             <div>
               <div className="flex items-center gap-2 xs:gap-3 mb-3 xs:mb-4">

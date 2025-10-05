@@ -39,46 +39,26 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative text-center px-6 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
-        {/* React Bits style tag */}
-        <div className="mb-6 animate-fade-in">
-          <span className="inline-flex items-center gap-2 bg-black/60 backdrop-blur-sm border border-gray-800/50 rounded-full px-4 py-2 text-sm text-white/80">
-            <Sparkles className="w-4 h-4" />
-            New Experience
-          </span>
-        </div>
         
         {/* Main headline */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white animate-fade-in leading-tight" style={{ animationDelay: "0.2s" }}>
-          Bring the cosmos to you,<br />
-          with one line of code
+          The Adventures of Space Weather:<br />
+          From the Fiery Sun to Our Blue Planet
         </h1>
         
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
-          <Button
-            onClick={scrollToContent}
-            size="lg"
-            className="bg-white text-black hover:bg-gray-100 rounded-full px-8 py-4 text-lg font-semibold transition-all duration-200"
-          >
-            Get Started
-          </Button>
           <Button
             onClick={() => navigate('/aeroverse')}
             size="lg"
             variant="outline"
             className="bg-transparent border border-gray-600 text-white hover:bg-white/10 rounded-full px-8 py-4 text-lg font-semibold transition-all duration-200"
           >
-            Listen Story
+            Explore AeroVerse
           </Button>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float">
-        <div className="w-6 h-10 border-2 border-primary/50 rounded-full flex justify-center pt-2">
-          <div className="w-1 h-2 bg-primary rounded-full animate-glow"></div>
-        </div>
-      </div>
     </section>
   );
 };

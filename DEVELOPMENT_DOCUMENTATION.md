@@ -1,325 +1,454 @@
-# AeroStory: Stellar View - Development Documentation
-
-## 🌌 Project Overview
-
-**AeroStory: Stellar View** is a high-performance space weather storytelling platform that combines educational content with stunning 3D visualizations. The project makes cosmic phenomena accessible through beautiful, interactive experiences with optimized API integration and intelligent caching.
-
-### Core Concept
-- **"Space Weather Through the Eyes of Earthlings"**
-- Educational storytelling about space weather phenomena
-- Interactive 3D experiences combined with informative content
-- Modern, responsive web application with glassmorphism design
-- Real-time NASA data integration with advanced caching
-
----
+# AeroStory Development Documentation
 
 ## 🏗️ Technical Architecture
 
-### Frontend Stack
-```
-React 18.3.1 + TypeScript 5.8.3
-├── Build Tool: Vite 5.4.19
-├── Styling: Tailwind CSS 3.4.17 + shadcn/ui
-├── 3D Graphics: Three.js + React Three Fiber + OGL
-├── Routing: React Router DOM 6.30.1
-├── State: TanStack Query 5.x + Custom API Hooks
-├── Animations: Framer Motion 12.23.22
-├── Performance: React.lazy + Suspense
-├── Error Handling: Error Boundaries + Fallback UI
-└── Icons: Lucide React 0.462.0
-```
+### Core Technologies
+- **React 18** with TypeScript for type-safe development
+- **Vite** for fast development and optimized builds
+- **Tailwind CSS** with custom design system
+- **shadcn/ui** components built on Radix UI primitives
+- **React Router DOM v7** with future flags enabled
+- **TanStack React Query** for data fetching and caching
 
-### Project Structure
-```
-src/
-├── components/
-│   ├── ui/ (shadcn/ui components)
-│   ├── Hero.tsx (Main hero section)
-│   ├── Navigation.tsx (Glassmorphism nav)
-│   ├── StorySection.tsx (Content sections)
-│   ├── Galaxy.tsx (React Bits Galaxy background)
-│   ├── DonkiSection.tsx (Solar flare data)
-│   ├── ApodSection.tsx (Daily space images)
-│   ├── ErrorBoundary.tsx (Error handling)
-│   └── Footer.tsx
-├── pages/
-│   ├── Index.tsx (Landing page with lazy loading)
-│   ├── AeroVerse.tsx (3D experience)
-│   └── NotFound.tsx
-├── hooks/
-│   └── useNasaApi.ts (Optimized API hooks)
-├── assets/ (Space imagery)
-└── lib/ (Utilities)
-```
+### 3D Graphics Stack
+- **Three.js** for WebGL rendering
+- **React Three Fiber** for React integration
+- **@react-three/drei** for utilities and helpers
+- **Custom shaders** for galaxy background effects
 
----
+### State Management
+- **React Query** for server state management
+- **useState/useEffect** for component state
+- **useRef** for DOM manipulation and animations
+- **Custom hooks** for API integration
 
-## 🚀 Performance Optimizations
+## 📊 API Integration
 
-### 1. React Query Integration
+### NASA APIs
+The application integrates with multiple NASA APIs for real-time space data:
 
-#### API Optimization
+#### DONKI (Solar Flares)
 ```typescript
-// useNasaApi.ts - Optimized NASA API hooks
-- Intelligent caching with stale-while-revalidate
-- Automatic retry with exponential backoff
-- Background refetching for real-time data
-- Error handling with user-friendly fallbacks
-- TypeScript interfaces for type safety
+// API Endpoint
+https://api.nasa.gov/DONKI/FLR?startDate=2024-01-01&endDate=2024-12-31&api_key=${API_KEY}
+
+// Data Structure
+interface SolarFlare {
+  flrID: string;
+  beginTime: string;
+  peakTime: string;
+  endTime: string;
+  classType: string;
+  sourceLocation: string;
+  activeRegionNum: number;
+  linkedEvents: string[];
+  notes: string;
+}
 ```
 
-#### Query Configuration
+#### APOD (Astronomy Picture of the Day)
+```typescript
+// API Endpoint
+https://api.nasa.gov/planetary/apod?api_key=${API_KEY}
+
+// Data Structure
+interface APOD {
+  date: string;
+  explanation: string;
+  hdurl: string;
+  media_type: string;
+  service_version: string;
+  title: string;
+  url: string;
+}
+```
+
+### Custom Hooks
+```typescript
+// useNasaApi.ts
+export const useApod = () => {
+  return useQuery({
+    queryKey: ['apod'],
+    queryFn: fetchApod,
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours
+    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days
+    retry: 3,
+    refetchOnWindowFocus: false,
+  });
+};
+```
+
+## 🎨 Design System
+
+### Color Palette
+```css
+:root {
+  /* Primary Colors */
+  --primary: 210 100% 60%;
+  --primary-foreground: 0 0% 98%;
+  
+  /* Background Colors */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(16px);
+  
+  /* Cosmic Gradients */
+  --gradient-cosmic: linear-gradient(135deg, #1e3a8a, #7c3aed, #ec4899);
+  --gradient-solar: linear-gradient(135deg, #f59e0b, #ef4444, #dc2626);
+  --gradient-aurora: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
+}
+```
+
+### Typography Scale
+```css
+.text-glow {
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.text-cosmic {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+```
+
+### Responsive Breakpoints
+```typescript
+// tailwind.config.ts
+screens: {
+  'xs': '475px',
+  'sm': '640px',
+  'md': '768px',
+  'lg': '1024px',
+  'xl': '1280px',
+  '2xl': '1536px',
+  '3xl': '1600px',
+  '4xl': '1920px',
+  '5xl': '2560px',
+}
+```
+
+## 🎮 Interactive Components
+
+### Galaxy Background
+```typescript
+// Galaxy.tsx - WebGL-based starfield
+const Galaxy = ({ 
+  density = 2.0,
+  glowIntensity = 0.8,
+  saturation = 1.0,
+  twinkleIntensity = 0.3,
+  rotationSpeed = 0.05,
+  repulsionStrength = 2.0,
+  starSpeed = 0.2,
+  speed = 0.3
+}) => {
+  // WebGL shader implementation
+  // Mouse parallax effects
+  // Fallback CSS animation
+};
+```
+
+### Particle Systems
+```typescript
+// Interactive particle animations
+const ParticleSystem = ({ 
+  type: 'cosmic' | 'solar' | 'aurora',
+  isActive: boolean,
+  mousePosition: Vector2
+}) => {
+  // Canvas-based particle physics
+  // Mouse interaction
+  // Stage-specific behaviors
+};
+```
+
+### Story Components
+
+#### Traditional Stories
+- **StoryPage.tsx**: Full-featured story viewer
+- **Author profiles** and engagement metrics
+- **Related stories** and recommendations
+- **Social sharing** and comments
+
+#### Hybrid Stories
+- **HybridStory.tsx**: Scrollable + interactive
+- **Canvas animations** in specific sections
+- **Mouse interactions** with particle systems
+- **Table of contents** navigation
+
+#### Immersive Stories
+- **ImmersiveStory.tsx**: Full-screen 3D
+- **React Three Fiber** integration
+- **Advanced particle systems**
+- **Web Audio API** for ambient sounds
+
+#### Solar Flare Journey
+- **SolarFlareStory.tsx**: Educational narrative
+- **5-stage journey**: Sun → Space → Astronauts → Earth → Aurora
+- **Interactive demonstrations** of each stage
+- **Real-time particle physics**
+
+## 🚀 Performance Optimization
+
+### React Query Configuration
 ```typescript
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,     // 5 minutes
-      cacheTime: 10 * 60 * 1000,    // 10 minutes
-      retry: 3,                      // 3 retry attempts
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: 3,
       retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
-      refetchOnWindowFocus: false,   // Disable on focus
-      refetchOnReconnect: true,      // Enable on reconnect
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
     },
   },
 });
 ```
 
-### 2. Lazy Loading Implementation
-
-#### Code Splitting
+### Lazy Loading
 ```typescript
-// Index.tsx - Lazy loaded components
-const DonkiSection = lazy(() => import("@/components/DonkiSection"));
-const ApodSection = lazy(() => import("@/components/ApodSection"));
+// Code splitting with React.lazy
+const DonkiSection = lazy(() => import('@/components/DonkiSection'));
+const ApodSection = lazy(() => import('@/components/ApodSection'));
 
-// Wrapped in Suspense with loading fallbacks
+// Suspense wrapper
 <Suspense fallback={<LoadingSpinner />}>
-  <DonkiSection id="donki-solar-flares" />
+  <DonkiSection />
 </Suspense>
 ```
 
-#### Performance Benefits
-- **Reduced Initial Bundle Size**: Heavy components load on demand
-- **Faster Time to Interactive**: Critical path optimization
-- **Better User Experience**: Smooth loading states
-- **Memory Efficiency**: Components loaded only when needed
-
-### 3. Error Handling & Resilience
-
-#### Error Boundary Implementation
+### WebGL Optimization
 ```typescript
-// ErrorBoundary.tsx - Robust error handling
-- Catches JavaScript errors anywhere in component tree
-- Displays fallback UI with retry functionality
-- Logs errors for monitoring (development/production)
-- Graceful degradation for failed API calls
+// Context loss handling
+canvas.addEventListener('webglcontextlost', (event) => {
+  event.preventDefault();
+  // Fallback to CSS animation
+});
+
+canvas.addEventListener('webglcontextrestored', () => {
+  // Reinitialize WebGL
+});
 ```
 
-#### API Error Management
+## 🔧 Development Workflow
+
+### Component Structure
 ```typescript
-// Custom error handling in API hooks
-- HTTP status code validation
-- Network error detection
-- Timeout handling
-- Fallback data for offline scenarios
-- User-friendly error messages
+// Standard component template
+interface ComponentProps {
+  // Props interface
+}
+
+const Component: React.FC<ComponentProps> = ({ ...props }) => {
+  // Hooks
+  const [state, setState] = useState();
+  const ref = useRef<HTMLDivElement>(null);
+  
+  // Effects
+  useEffect(() => {
+    // Side effects
+  }, []);
+  
+  // Event handlers
+  const handleEvent = () => {
+    // Event logic
+  };
+  
+  // Render
+  return (
+    <div className="component-container">
+      {/* JSX content */}
+    </div>
+  );
+};
+
+export default Component;
 ```
 
----
-
-## 🎨 UI/UX Optimizations
-
-### 1. APOD Section Improvements
-
-#### Progressive Disclosure
+### Error Handling
 ```typescript
-// ApodSection.tsx - Text optimization
-- Truncated explanations with "Show More" toggle
-- Clean card layout with consistent spacing
-- Fixed image dimensions to prevent layout shift
-- Minimal shadows and borders for clean appearance
+// Error Boundary
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback />;
+    }
+    return this.props.children;
+  }
+}
 ```
 
-#### Visual Hierarchy
-- **Title**: Large, bold, prominent
-- **Subtitle**: Medium size, secondary
-- **Body**: Readable size, proper contrast
-- **Interactive Elements**: Clear visual feedback
-
-### 2. Performance-First Styling
-
-#### Optimized CSS
-```css
-/* Minimal, purposeful styling */
-- Removed unnecessary gradients and shadows
-- Consistent spacing using Tailwind utilities
-- Reduced animation complexity
-- Optimized for mobile-first approach
-```
-
-#### Layout Optimization
-- **Grid Systems**: Efficient responsive layouts
-- **Card Components**: Consistent spacing and borders
-- **Typography Scale**: Clear hierarchy without font soup
-- **Color Usage**: Meaningful colors only, no decoration
-
----
-
-## 🔧 API Integration
-
-### 1. NASA API Endpoints
-
-#### Optimized Endpoints
+### API Error Handling
 ```typescript
-// DONKI Solar Flares
-- URL: https://api.nasa.gov/DONKI/FLR
-- Refresh: Every 2 minutes
-- Cache: 5 minutes
-- Payload: Minimal, essential data only
-
-// APOD Daily Images
-- URL: https://api.nasa.gov/planetary/apod
-- Refresh: Daily at midnight
-- Cache: 24 hours
-- Optimization: Image lazy loading
-
-// ISS Location
-- URL: https://api.wheretheiss.at/v1/satellites/25544
-- Refresh: Every 30 seconds
-- Cache: 2 minutes
-- Real-time: Position tracking
-
-// Near Earth Objects
-- URL: https://api.nasa.gov/neo/rest/v1/feed
-- Refresh: Hourly
-- Cache: 2 hours
-- Processing: Client-side data reduction
+const useNasaApi = () => {
+  return useQuery({
+    queryKey: ['nasa-data'],
+    queryFn: fetchNasaData,
+    retry: (failureCount, error) => {
+      if (error.status === 404) return false;
+      return failureCount < 3;
+    },
+    onError: (error) => {
+      console.error('NASA API Error:', error);
+      // Log to monitoring service
+    },
+  });
+};
 ```
-
-### 2. Data Processing
-
-#### Payload Optimization
-```typescript
-// Minimal data extraction
-- Only essential fields fetched
-- Client-side data processing
-- Efficient data structures
-- Type-safe interfaces
-```
-
-#### Caching Strategy
-```typescript
-// Intelligent caching
-- Stale-while-revalidate pattern
-- Background updates
-- Offline fallbacks
-- Memory-efficient storage
-```
-
----
 
 ## 📱 Responsive Design
 
-### Breakpoints
+### Mobile-First Approach
 ```css
-/* Custom responsive breakpoints */
-xs: 475px    /* Extra small devices */
-sm: 640px    /* Small devices */
-md: 768px    /* Medium devices */
-lg: 1024px   /* Large devices */
-xl: 1280px   /* Extra large devices */
-2xl: 1536px  /* 2X large devices */
+/* Base styles for mobile */
+.component {
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .component {
+    padding: 1.5rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+  .component {
+    padding: 2rem;
+    font-size: 1.25rem;
+  }
+}
 ```
 
-### Mobile Optimizations
-- **Touch-friendly Navigation**: Large tap targets (44px minimum)
-- **Optimized 3D Performance**: Reduced particle count on mobile
-- **Responsive Typography**: Scalable text sizes with proper line heights
-- **Mobile-first Approach**: Designed for mobile, enhanced for desktop
+### Touch Interactions
+```typescript
+// Touch-friendly interactions
+const handleTouchStart = (event: TouchEvent) => {
+  const touch = event.touches[0];
+  setMousePosition({
+    x: touch.clientX,
+    y: touch.clientY
+  });
+};
+```
 
----
+## 🧪 Testing Strategy
 
-## 🚀 Performance Metrics
+### Unit Tests
+```typescript
+// Component testing
+import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-### Bundle Optimization
-- **Code Splitting**: Lazy-loaded components reduce initial bundle
-- **Tree Shaking**: Unused code elimination
-- **Asset Optimization**: Compressed images and fonts
-- **WebGL Optimization**: Efficient shader compilation
+const TestWrapper = ({ children }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } }
+  });
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+};
 
-### Runtime Performance
-- **60fps Animations**: Smooth WebGL rendering
-- **Memory Management**: Proper cleanup and garbage collection
-- **API Efficiency**: Minimal network requests with intelligent caching
-- **Error Recovery**: Graceful handling of failures
+test('renders component correctly', () => {
+  render(<Component />, { wrapper: TestWrapper });
+  expect(screen.getByText('Expected Text')).toBeInTheDocument();
+});
+```
 
----
+### Integration Tests
+```typescript
+// API integration testing
+test('fetches NASA data successfully', async () => {
+  const mockData = { /* mock API response */ };
+  fetchMock.mockResponseOnce(JSON.stringify(mockData));
+  
+  const { result } = renderHook(() => useApod(), {
+    wrapper: TestWrapper
+  });
+  
+  await waitFor(() => {
+    expect(result.current.isSuccess).toBe(true);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+```
 
-## 🛠️ Development Commands
+## 🚀 Deployment
 
+### Build Process
 ```bash
-# Development
-npm run dev          # Start development server with HMR
-npm run build        # Production build with optimization
-npm run preview      # Preview production build locally
-npm run lint         # Run ESLint with strict rules
+# Production build
+npm run build
 
-# Dependencies
-npm install          # Install dependencies
-npm audit fix        # Fix security vulnerabilities
+# Preview build
+npm run preview
 
-# Performance
-npm run analyze      # Bundle size analysis
-npm run test         # Run test suite
+# Type checking
+npm run type-check
 ```
 
----
+### Environment Configuration
+```typescript
+// Environment variables
+const config = {
+  apiKey: import.meta.env.VITE_NASA_API_KEY,
+  baseUrl: import.meta.env.VITE_API_BASE_URL || 'https://api.nasa.gov',
+  environment: import.meta.env.MODE,
+};
+```
 
-## 🔍 Monitoring & Debugging
+### Performance Monitoring
+```typescript
+// Web Vitals tracking
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
 
-### Development Tools
-- **React Query DevTools**: API state debugging
-- **React DevTools**: Component inspection
-- **WebGL Inspector**: Shader debugging
-- **Network Tab**: API call monitoring
+getCLS(console.log);
+getFID(console.log);
+getFCP(console.log);
+getLCP(console.log);
+getTTFB(console.log);
+```
 
-### Error Tracking
-- **Error Boundaries**: Catch and handle errors gracefully
-- **Console Logging**: Development error details
-- **User Feedback**: Clear error messages with retry options
-- **Fallback UI**: Graceful degradation for failures
-
----
-
-## 📚 Resources & References
-
-### Documentation
-- [React Query Documentation](https://tanstack.com/query/latest)
-- [React.lazy Documentation](https://react.dev/reference/react/lazy)
-- [NASA API Documentation](https://api.nasa.gov/)
-- [WebGL Best Practices](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices)
-
-### Performance References
-- [React Performance Guide](https://react.dev/learn/render-and-commit)
-- [Web Vitals](https://web.dev/vitals/)
-- [Bundle Analysis](https://webpack.js.org/guides/code-splitting/)
-
----
-
-## 🎯 Future Enhancements
+## 🔮 Future Enhancements
 
 ### Planned Features
-- **Serverless API Routes**: Proxy NASA APIs for better caching
-- **Service Worker**: Offline functionality and background sync
-- **WebP Images**: Optimized image formats for faster loading
-- **Virtual Scrolling**: Efficient rendering of large datasets
+- **WebXR Support**: VR/AR experiences for immersive stories
+- **Real-time Collaboration**: Multi-user story creation
+- **AI Integration**: Automated story generation from NASA data
+- **Progressive Web App**: Offline functionality and push notifications
+- **Advanced 3D**: More sophisticated particle systems and shaders
 
 ### Technical Improvements
-- **Performance Monitoring**: Real-time performance tracking
-- **A/B Testing**: UI optimization testing
-- **Accessibility**: WCAG compliance improvements
-- **SEO Optimization**: Better search engine visibility
+- **Server-Side Rendering**: Next.js migration for better SEO
+- **GraphQL**: More efficient data fetching
+- **WebAssembly**: High-performance calculations
+- **Service Workers**: Advanced caching strategies
 
 ---
 
-*This documentation represents the optimized, high-performance implementation of AeroStory: Stellar View with React Query, lazy loading, and intelligent error handling.*
+This documentation serves as a comprehensive guide for developers working on the AeroStory project. For specific implementation details, refer to the source code and inline comments.

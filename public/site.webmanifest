@@ -1,0 +1,30 @@
+{
+  "name": "AeroStory - Space Weather Storytelling",
+  "short_name": "AeroStory",
+  "description": "Experience the cosmos through immersive storytelling and space weather visualization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "192x192",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["education", "science", "entertainment"],
+  "lang": "en",
+  "dir": "ltr"
+}

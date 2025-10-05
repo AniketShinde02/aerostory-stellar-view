@@ -1,6 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Text-to-Speech Highlighting Styles */
+.tts-highlight {
+  @apply bg-primary/20 border-l-2 border-primary rounded-l px-2 transition-all duration-300;
+  animation: tts-pulse 2s ease-in-out infinite;
+}
+
+.tts-current {
+  @apply bg-primary/30 border-primary/50;
+  animation: tts-highlight 1s ease-in-out infinite;
+}
+
+@keyframes tts-pulse {
+  0%, 100% {
+    @apply bg-primary/20;
+  }
+  50% {
+    @apply bg-primary/30;
+  }
+}
+
+@keyframes tts-highlight {
+  0%, 100% {
+    @apply bg-primary/30;
+  }
+  50% {
+    @apply bg-primary/40;
+  }
+}
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
