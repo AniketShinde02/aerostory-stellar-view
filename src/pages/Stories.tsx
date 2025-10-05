@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import TextToSpeech from '@/components/TextToSpeech';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -192,13 +191,6 @@ const Stories = () => {
     <div className="min-h-screen bg-background">
       <SEO {...seoConfigs.stories} />
       <Navigation />
-      <TextToSpeech 
-        autoDetect={true}
-        targetSelector="h1, h2, h3, p, .prose, [data-tts]"
-        highlightText={true}
-        smartMode={true}
-        showControls={true}
-      />
       
       {/* Hero Section */}
       <section className="pt-16 pb-12 relative overflow-hidden">

@@ -17,8 +17,6 @@ import {
   AlertCircle,
   RefreshCw,
   Settings,
-  Mic,
-  MicOff,
   Volume2,
   VolumeX,
   Lightbulb,
@@ -100,13 +98,10 @@ const ChatBot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'error'>('connected');
   const [retryCount, setRetryCount] = useState(0);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [showQuickQuestions, setShowQuickQuestions] = useState(true);
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [smartFeatures, setSmartFeatures] = useState<SmartFeature[]>([
-    { id: 'voice', name: 'Voice Input', icon: Mic, enabled: false },
     { id: 'suggestions', name: 'Smart Suggestions', icon: Lightbulb, enabled: true },
     { id: 'rich-content', name: 'Rich Content', icon: Camera, enabled: true },
     { id: 'proactive', name: 'Proactive Help', icon: Sparkles, enabled: true }
@@ -118,7 +113,6 @@ const ChatBot: React.FC = () => {
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -134,30 +128,6 @@ const ChatBot: React.FC = () => {
     }
   }, [isOpen]);
 
-  // Initialize speech recognition
-  useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInputValue(transcript);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-    }
-  }, []);
 
   // Context-aware suggestions based on current page
   useEffect(() => {
@@ -362,20 +332,6 @@ const ChatBot: React.FC = () => {
     }
   };
 
-  const handleVoiceToggle = () => {
-    if (!isVoiceEnabled) {
-      setIsVoiceEnabled(true);
-      return;
-    }
-
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-    } else {
-      recognitionRef.current?.start();
-      setIsListening(true);
-    }
-  };
 
   const generateSmartSuggestions = (userInput: string): string[] => {
     const input = userInput.toLowerCase();
@@ -581,8 +537,8 @@ const ChatBot: React.FC = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-[350px] sm:w-[380px] lg:w-[400px] bg-card/95 backdrop-blur-xl border-primary/20 shadow-2xl transition-all duration-300 overflow-hidden ${
-          isMinimized ? 'h-16' : 'h-[600px] sm:h-[650px] lg:h-[680px]'
+        <Card className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-[350px] sm:w-[380px] lg:w-[380px] bg-card/95 backdrop-blur-xl border-primary/20 shadow-2xl transition-all duration-300 overflow-hidden ${
+          isMinimized ? 'h-16' : 'h-[600px] sm:h-[650px] lg:h-[600px]'
         }`}>
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-primary/20">
@@ -841,28 +797,8 @@ const ChatBot: React.FC = () => {
                     onKeyPress={handleKeyPress}
                     placeholder="Ask about space weather..."
                     className="flex-1 bg-background/50 border-primary/30 focus:border-primary/50 text-sm h-8"
-                    disabled={isLoading || isListening}
+                    disabled={isLoading}
                   />
-                  {/* Voice Input Button */}
-                  <Button
-                    onClick={handleVoiceToggle}
-                    variant="outline"
-                    size="sm"
-                    className={`border-primary/30 h-8 w-8 p-0 ${
-                      isListening 
-                        ? 'bg-red-500/20 text-red-400 border-red-500/50 animate-pulse' 
-                        : isVoiceEnabled 
-                        ? 'text-blue-400 hover:bg-blue-500/10' 
-                        : 'text-foreground/70 hover:bg-primary/10'
-                    }`}
-                    title={isListening ? 'Listening...' : isVoiceEnabled ? 'Click to start voice input' : 'Voice input not available'}
-                  >
-                    {isListening ? (
-                      <MicOff className="w-3 h-3" />
-                    ) : (
-                      <Mic className="w-3 h-3" />
-                    )}
-                  </Button>
                   <Button
                     onClick={() => handleSendMessage()}
                     disabled={!inputValue.trim() || isLoading}
@@ -874,7 +810,7 @@ const ChatBot: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between mt-3 pb-1">
                   <p className="text-xs text-foreground/60 leading-relaxed">
-                    {isListening ? '🎤 Listening...' : 'Type your own question or use quick options above!'}
+                    Type your own question or use quick options above!
                   </p>
                   {/* Smart Features Toggle */}
                   <div className="flex items-center gap-1">

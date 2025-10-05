@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Chrome as Home, Maximize2, Info, Star, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import AeroVerseVoiceOver from "@/components/AeroVerseVoiceOver";
 import Logo from "@/components/Logo";
 
 // AeroVerse with embedded Stars Chrome Experiment
@@ -163,8 +162,6 @@ const AeroVerse = () => {
         </div>
       </motion.div>
 
-      {/* Circular Voice-Over Button */}
-      <AeroVerseVoiceOver />
     </div>
   );
 };

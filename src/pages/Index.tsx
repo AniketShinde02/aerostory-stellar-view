@@ -2,7 +2,6 @@ import { Suspense, lazy } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
-import TextToSpeech from "@/components/TextToSpeech";
 import SEO from "@/components/SEO";
 import { seoConfigs } from "@/components/SEO";
 
@@ -18,13 +17,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <SEO {...seoConfigs.home} />
       <Navigation />
-      <TextToSpeech 
-        autoDetect={true}
-        targetSelector="h1, h2, h3, p, .prose, [data-tts]"
-        highlightText={true}
-        smartMode={true}
-        showControls={true}
-      />
       <Hero />
       
       {/* APOD Section - Lazy Loaded (Moved up for better hero experience) */}

@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import TextToSpeech from '@/components/TextToSpeech';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, X, ExternalLink, Play } from 'lucide-react';
 import SEO from '@/components/SEO';
@@ -596,13 +595,6 @@ it's me — Sunny — saying hello from the Sun!" 🌞👋`
     <div className="min-h-screen bg-background">
       <SEO {...seoConfigs.sunnyAdventure} />
       <Navigation />
-      <TextToSpeech 
-        autoDetect={true}
-        targetSelector="h1, h2, h3, p, .prose, [data-tts]"
-        highlightText={true}
-        smartMode={true}
-        showControls={true}
-      />
       
       {/* Hero Section */}
       <section className="pt-20 pb-8">

@@ -2,16 +2,30 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Zap, Clock, AlertTriangle, Activity, RefreshCw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Zap, Clock, AlertTriangle, Activity, RefreshCw, Calendar, Filter, Search } from "lucide-react";
 import { useDonkiSolarFlares } from "@/hooks/useNasaApi";
 import ErrorBoundary from "./ErrorBoundary";
+import { useState } from "react";
 
 interface DonkiSectionProps {
   id: string;
 }
 
 const DonkiSection = ({ id }: DonkiSectionProps) => {
-  const { data: donkiData, isLoading, error, refetch, isFetching } = useDonkiSolarFlares();
+  const [startDate, setStartDate] = useState(() => {
+    const today = new Date();
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return sevenDaysAgo.toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  });
+  const [isCustomDateRange, setIsCustomDateRange] = useState(false);
+
+  const { data: donkiData, isLoading, error, refetch, isFetching } = useDonkiSolarFlares(startDate, endDate);
 
   // Helper to get status color
   const getStatusColor = (status: string) => {
@@ -178,11 +192,107 @@ const DonkiSection = ({ id }: DonkiSectionProps) => {
           </Card>
         </div>
 
+        {/* Date Filter Section */}
+        <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-4 xs:p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold text-primary">Filter by Date Range</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Quick Date Presets */}
+            <div className="flex flex-col gap-2">
+              <Label className="text-sm text-foreground/70">Quick Filters</Label>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant={!isCustomDateRange ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setIsCustomDateRange(false);
+                    const today = new Date();
+                    setEndDate(today.toISOString().split('T')[0]);
+                    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    setStartDate(sevenDaysAgo.toISOString().split('T')[0]);
+                  }}
+                >
+                  Last 7 Days
+                </Button>
+                <Button
+                  variant={isCustomDateRange ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsCustomDateRange(true)}
+                >
+                  Custom Range
+                </Button>
+              </div>
+            </div>
+
+            {/* Custom Date Range */}
+            {isCustomDateRange && (
+              <>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="start-date" className="text-sm text-foreground/70">Start Date</Label>
+                  <Input
+                    id="start-date"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    max={endDate}
+                    className="bg-background/50 border-primary/30 text-foreground"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="end-date" className="text-sm text-foreground/70">End Date</Label>
+                  <Input
+                    id="end-date"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    max={new Date().toISOString().split('T')[0]}
+                    min={startDate}
+                    className="bg-background/50 border-primary/30 text-foreground"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <Button
+                    onClick={() => refetch()}
+                    variant="default"
+                    size="sm"
+                    disabled={isFetching}
+                    className="w-full"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    {isFetching ? 'Searching...' : 'Search'}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Date Range Display */}
+          {donkiData.dateRange && (
+            <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+              <div className="flex items-center gap-2 text-sm">
+                <Calendar className="w-4 h-4 text-primary" />
+                <span className="text-foreground/70">Showing data from:</span>
+                <span className="font-semibold text-primary">
+                  {new Date(donkiData.dateRange.start).toLocaleDateString()} to {new Date(donkiData.dateRange.end).toLocaleDateString()}
+                </span>
+                {donkiData.totalFound !== undefined && (
+                  <Badge variant="outline" className="ml-auto">
+                    {donkiData.totalFound} flares found
+                  </Badge>
+                )}
+              </div>
+            </div>
+          )}
+        </Card>
+
         {/* Solar Flares List */}
         <div className="space-y-4 xs:space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg xs:text-xl font-semibold text-primary">
-              Recent Solar Flares ({donkiData.solarFlares.length})
+              Solar Flares ({donkiData.solarFlares.length})
             </h3>
             <Button 
               onClick={() => refetch()} 

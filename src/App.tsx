@@ -10,7 +10,7 @@ import StoryPage from "./pages/StoryPage";
 import SunnyStory from "./pages/SunnyStory";
 import Stories from "./pages/Stories";
 import SunnyAdventureStory from "./pages/SunnyAdventureStory";
-import TTSDemo from "./pages/TTSDemo";
+import Resources from "./pages/Resources";
 import SkeletonDemo from "./components/SkeletonDemo";
 import NotFound from "./pages/NotFound";
 import ChatBot from "./components/ChatBot";
@@ -49,7 +49,7 @@ const App = () => (
             <Route path="/sunny-adventure" element={<SunnyStory />} />
             <Route path="/story/:storyId" element={<StoryPage />} />
             <Route path="/stories" element={<Stories />} />
-            <Route path="/tts-demo" element={<TTSDemo />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/skeleton-demo" element={<SkeletonDemo />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

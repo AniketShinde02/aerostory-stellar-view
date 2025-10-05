@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Sparkles } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Galaxy from "./Galaxy";
 

@@ -10,7 +10,10 @@ interface BackgroundMusicProps {
 
 const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => {
   const location = useLocation();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(() => {
+    const saved = localStorage.getItem('bgMusicPlaying');
+    return saved === 'true' || saved === null; // Auto-play by default
+  });
   const [volume, setVolume] = useState(() => {
     const saved = localStorage.getItem('bgMusicVolume');
     return saved ? parseFloat(saved) : 0.3; // 30% volume default
@@ -20,6 +23,7 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
     return saved === 'true';
   });
   const [isVisible, setIsVisible] = useState(true);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Determine which audio file to use based on current page
@@ -42,6 +46,13 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
     // Handle audio events
     const handleCanPlay = () => {
       console.log('🎵 Audio loaded successfully');
+      // Auto-play when audio is ready and not muted
+      if (isPlaying && !isMuted) {
+        audio.play().catch(error => {
+          console.log('Auto-play prevented by browser, user interaction required:', error);
+          // Don't show error to user, just log it
+        });
+      }
     };
 
     const handleError = (e: Event) => {
@@ -50,10 +61,12 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
 
     const handlePlay = () => {
       setIsPlaying(true);
+      localStorage.setItem('bgMusicPlaying', 'true');
     };
 
     const handlePause = () => {
       setIsPlaying(false);
+      localStorage.setItem('bgMusicPlaying', 'false');
     };
 
     audio.addEventListener('canplay', handleCanPlay);
@@ -67,7 +80,30 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
     };
-  }, [volume, isMuted]);
+  }, [volume, isMuted, isPlaying]);
+
+  // Handle user interaction to enable auto-play
+  useEffect(() => {
+    const enableAudio = () => {
+      setHasUserInteracted(true);
+      // Try to play audio if it should be playing
+      if (audioRef.current && isPlaying && !isMuted) {
+        audioRef.current.play().catch(error => {
+          console.log('Audio play failed after user interaction:', error);
+        });
+      }
+      document.removeEventListener('click', enableAudio);
+      document.removeEventListener('touchstart', enableAudio);
+    };
+
+    document.addEventListener('click', enableAudio);
+    document.addEventListener('touchstart', enableAudio);
+
+    return () => {
+      document.removeEventListener('click', enableAudio);
+      document.removeEventListener('touchstart', enableAudio);
+    };
+  }, [isPlaying, isMuted]);
 
   // Handle audio source changes when navigating between pages
   useEffect(() => {
@@ -81,17 +117,18 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
       audio.src = audioSrc;
       audio.load();
       
-      // Auto-play if music was playing before
-      if (isPlaying) {
+      // Auto-play if music was playing before and user has interacted
+      if (isPlaying && hasUserInteracted) {
         audio.play().catch(console.error);
       }
     }
-  }, [audioSrc, isPlaying]);
+  }, [audioSrc, isPlaying, hasUserInteracted]);
 
   const togglePlayPause = async () => {
     if (!audioRef.current) return;
 
     try {
+      setHasUserInteracted(true); // Mark user interaction
       if (isPlaying) {
         audioRef.current.pause();
       } else {
@@ -195,7 +232,7 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
                     step="0.01"
                     value={isMuted ? 0 : volume}
                     onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-                    className="w-16 h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer slider"
+                    className="w-16 h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-lg"
                     style={{
                       background: `linear-gradient(to right, #667eea 0%, #667eea ${((isMuted ? 0 : volume) / 0.5) * 100}%, #374151 ${((isMuted ? 0 : volume) / 0.5) * 100}%, #374151 100%)`
                     }}
@@ -228,28 +265,6 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
         </motion.div>
       )}
 
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 16px;
-          width: 16px;
-          border-radius: 50%;
-          background: #667eea;
-          cursor: pointer;
-          border: 2px solid #ffffff;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .slider::-moz-range-thumb {
-          height: 16px;
-          width: 16px;
-          border-radius: 50%;
-          background: #667eea;
-          cursor: pointer;
-          border: 2px solid #ffffff;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-      `}</style>
     </>
   );
 };
