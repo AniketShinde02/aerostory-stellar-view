@@ -12,8 +12,6 @@ import {
   User, 
   Sparkles,
   Loader2,
-  Minimize2,
-  Maximize2,
   AlertCircle,
   RefreshCw,
   Settings,
@@ -75,7 +73,6 @@ interface SmartFeature {
 
 const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -524,22 +521,10 @@ const ChatBot: React.FC = () => {
         </Button>
       )}
 
-      {/* Close Button Outside Chat Card */}
-      {isOpen && (
-        <Button
-          onClick={() => setIsOpen(false)}
-          className="fixed bottom-[620px] right-4 sm:bottom-[670px] sm:right-6 z-50 w-8 h-8 rounded-full bg-red-500/90 hover:bg-red-600 shadow-lg transition-all duration-300"
-          size="sm"
-        >
-          <X className="w-4 h-4 text-white" />
-        </Button>
-      )}
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-[350px] sm:w-[380px] lg:w-[380px] bg-card/95 backdrop-blur-xl border-primary/20 shadow-2xl transition-all duration-300 overflow-hidden ${
-          isMinimized ? 'h-16' : 'h-[600px] sm:h-[650px] lg:h-[600px]'
-        }`}>
+        <Card className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-[350px] sm:w-[380px] lg:w-[380px] h-[600px] sm:h-[650px] lg:h-[600px] bg-card/95 backdrop-blur-xl border-primary/20 shadow-2xl transition-all duration-300 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-primary/20">
             <div className="flex items-center gap-3">
@@ -595,16 +580,16 @@ const ChatBot: React.FC = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsMinimized(!isMinimized)}
-                className="text-foreground/70 hover:text-white"
+                onClick={() => setIsOpen(false)}
+                className="text-foreground/70 hover:text-red-400 hover:bg-red-500/10"
+                title="Close Chat"
               >
-                {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
-          {!isMinimized && (
-            <>
+          <>
               {/* Messages */}
               <div className="flex-1 overflow-y-auto max-h-[400px] p-3 space-y-3 scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent">
                 {messages.map((message) => (
@@ -849,7 +834,6 @@ const ChatBot: React.FC = () => {
                 </div>
               </div>
             </>
-          )}
         </Card>
       )}
     </>

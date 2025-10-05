@@ -5,24 +5,25 @@ All notable changes to AeroStory will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2024-12-19
+## [2.1.0] - 2024-12-19
 
 ### 🚀 Major Features Added
-- **Background Music System**: Dynamic page-specific audio with volume controls
+- **Background Music System**: Dynamic page-specific audio with volume controls (Audio 1 & Audio 2)
 - **Enhanced ChatBot**: AI assistant with dual API support and smart responses
-- **3D Space Experience**: Immersive AeroVerse with realistic planets
+- **3D Space Experience**: Immersive AeroVerse with Chrome Stars integration
+- **Performance Monitoring**: Real-time performance metrics and optimization
 
 ### ✨ New Features
-- Added Love Story (Epic Orchestra) background music for main pages
-- Added Interstellar Theme background music for AeroVerse page
+- Added Audio 1 background music for main pages
+- Added Audio 2 background music for AeroVerse page
 - Implemented intelligent volume control (30% default, 50% max)
 - Created persistent user preferences for audio settings
 - Added glassmorphism music control panel with animations
-- Added realistic planet textures and atmospheric effects
-- Created interactive 3D space environment with WebGL optimization
+- Created interactive 3D space environment with Chrome Experiments
 - Added dual AI API system (Gemini + Groq) with fallback handling
 - Added smart suggestions and quick actions for ChatBot
 - Created responsive design system for all screen sizes
+- Added performance monitoring and timeout protection
 
 ### 🎨 UI/UX Improvements
 - Updated homepage tagline to "The Adventurous Exploration of Space Weather"
@@ -32,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved mobile responsiveness across all components
 - Added proper error boundaries and graceful error handling
 - Enhanced accessibility with keyboard navigation and screen reader support
+- Optimized ChatBot with internal close button
+- Cleaned up AeroVerse interface with proper header/footer
 
 ### 🛠️ Technical Improvements
 - Migrated from development to production-ready architecture
@@ -47,6 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🐛 Bug Fixes
 - Fixed `useLocation()` Router context error in ChatBot
 - Resolved race conditions in quick question handlers
+- Fixed Gemini API model name (gemini-1.5-flash-001)
+- Fixed site hanging issues with timeout protection
+- Fixed background music z-index conflicts
+- Removed performance monitor display issues
+- Fixed ChatBot close button positioning
+- Resolved AeroVerse layout conflicts
 - Fixed content overflow issues in ChatBot UI
 - Eliminated console errors (X-Frame-Options, Manifest, Font preload)
 - Fixed API endpoint issues (Gemini 404, Groq 400)

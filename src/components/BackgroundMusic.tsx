@@ -183,14 +183,14 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className={`fixed bottom-6 left-6 z-50 ${className}`}
+            className={`fixed bottom-6 left-6 z-[60] ${className}`}
           >
             <div className="bg-background/90 backdrop-blur-xl border border-primary/20 rounded-xl p-3 shadow-2xl">
               {/* Header */}
               <div className="flex items-center gap-2 mb-3">
                 <Music className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-foreground">
-                  {isAeroVerse ? 'Interstellar' : 'Love Story'}
+                  {isAeroVerse ? 'Audio 2' : 'Audio 1'}
                 </span>
                 <Button
                   onClick={() => setIsVisible(false)}
@@ -261,7 +261,7 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="fixed bottom-6 left-6 z-50"
+          className="fixed bottom-6 left-6 z-[60]"
         >
           <Button
             onClick={() => setIsVisible(true)}

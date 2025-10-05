@@ -94,11 +94,20 @@
 
 #### 🏠 Homepage Updates
 - **New Tagline**: "The Adventurous Exploration of Space Weather"
+- **Audio Track Names**: Changed from "Love Story/Interstellar" to "Audio 1/Audio 2"
 - **Better Messaging**: More descriptive and engaging
 - **Visual Hierarchy**: Improved content flow
 
-#### 🎵 Text-to-Speech Enhancements
-- **Smart Mode**: Only narrates space-related content
+#### 🤖 ChatBot Improvements
+- **Internal Close Button**: Moved close button inside chatbox header
+- **Removed Minimize/Maximize**: Simplified to close-only functionality
+- **Fixed Z-Index Issues**: Resolved button clickability problems
+- **Cleaner UI**: Removed external floating buttons
+
+#### 🎵 Background Music Updates
+- **Simplified Names**: "Audio 1" and "Audio 2" instead of descriptive names
+- **Fixed Z-Index**: Ensured music controls are always clickable
+- **Timeout Protection**: Added audio loading timeouts to prevent hanging
 - **Natural Voice**: Improved pitch, rate, and volume settings
 - **Content Detection**: Keyword-based filtering
 - **Visual Indicator**: "🧠 Smart" badge when active

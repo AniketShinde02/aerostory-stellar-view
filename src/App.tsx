@@ -15,7 +15,6 @@ import SkeletonDemo from "./components/SkeletonDemo";
 import NotFound from "./pages/NotFound";
 import ChatBot from "./components/ChatBot";
 import BackgroundMusic from "./components/BackgroundMusic";
-import PerformanceMonitor from "./components/PerformanceMonitor";
 
 // Create optimized query client with caching and error handling
 const queryClient = new QueryClient({
@@ -62,7 +61,6 @@ const App = () => (
           </Routes>
           <ChatBot />
           <BackgroundMusic />
-          <PerformanceMonitor />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

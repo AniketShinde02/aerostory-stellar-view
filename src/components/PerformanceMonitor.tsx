@@ -57,12 +57,8 @@ const PerformanceMonitor: React.FC = () => {
 
   return (
     <div className="fixed top-4 left-4 z-50 bg-black/80 text-white text-xs p-2 rounded font-mono">
-      <div>FPS: {metrics.frameRate}</div>
       {metrics.memoryUsage && (
-        <div>Memory: {metrics.memoryUsage}MB</div>
-      )}
-      {metrics.isSlow && (
-        <div className="text-red-400">⚠️ Slow Performance</div>
+        <div>{metrics.memoryUsage}MB</div>
       )}
     </div>
   );
