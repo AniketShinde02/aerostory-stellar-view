@@ -15,6 +15,7 @@ import SkeletonDemo from "./components/SkeletonDemo";
 import NotFound from "./pages/NotFound";
 import ChatBot from "./components/ChatBot";
 import BackgroundMusic from "./components/BackgroundMusic";
+import PerformanceMonitor from "./components/PerformanceMonitor";
 
 // Create optimized query client with caching and error handling
 const queryClient = new QueryClient({
@@ -22,10 +23,15 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
-      retry: 3,
-      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      retry: 2, // Reduced retries to prevent hanging
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 15000), // Reduced max delay
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
+      networkMode: 'online', // Only run queries when online
+    },
+    mutations: {
+      retry: 1, // Reduced mutation retries
+      networkMode: 'online',
     },
   },
 });
@@ -56,6 +62,7 @@ const App = () => (
           </Routes>
           <ChatBot />
           <BackgroundMusic />
+          <PerformanceMonitor />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

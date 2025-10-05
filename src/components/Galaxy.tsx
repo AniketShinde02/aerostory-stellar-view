@@ -301,6 +301,13 @@ export default function Galaxy({
        let animateId;
 
        function update(t) {
+         // Add performance check to prevent hanging
+         if (t > 1000000) { // Prevent infinite loops
+           console.warn('⚠️ Galaxy animation loop timeout, stopping');
+           cancelAnimationFrame(animateId);
+           return;
+         }
+         
          animateId = requestAnimationFrame(update);
          if (!disableAnimation) {
            program.uniforms.uTime.value = t * 0.001;

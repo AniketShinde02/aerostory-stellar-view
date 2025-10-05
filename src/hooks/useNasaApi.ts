@@ -46,9 +46,16 @@ export const useDonkiSolarFlares = (startDate?: string, endDate?: string) => {
       
       console.log(`🔍 Fetching solar flares from ${finalStartDate} to ${validEndDate}`);
       
+      // Add timeout to prevent hanging API calls
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch(
-        `${NASA_API_BASE}/DONKI/FLR?api_key=${import.meta.env.VITE_NASA_API_KEY}&startDate=${finalStartDate}&endDate=${validEndDate}`
+        `${NASA_API_BASE}/DONKI/FLR?api_key=${import.meta.env.VITE_NASA_API_KEY}&startDate=${finalStartDate}&endDate=${validEndDate}`,
+        { signal: controller.signal }
       );
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`DONKI API error: ${response.status} ${response.statusText}`);
@@ -87,9 +94,16 @@ export const useApod = () => {
   return useQuery({
     queryKey: ['apod', 'daily'],
     queryFn: async () => {
+      // Add timeout to prevent hanging API calls
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch(
-        `${NASA_API_BASE}/planetary/apod?api_key=${import.meta.env.VITE_NASA_API_KEY}`
+        `${NASA_API_BASE}/planetary/apod?api_key=${import.meta.env.VITE_NASA_API_KEY}`,
+        { signal: controller.signal }
       );
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`APOD API error: ${response.status} ${response.statusText}`);

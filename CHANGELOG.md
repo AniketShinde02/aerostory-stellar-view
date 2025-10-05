@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created responsive design system for all screen sizes
 
 ### 🎨 UI/UX Improvements
-- Updated homepage tagline to "The Adventures of Space Weather: From the Fiery Sun to Our Blue Planet"
+- Updated homepage tagline to "The Adventurous Exploration of Space Weather"
 - Implemented smooth animations with Framer Motion
 - Added loading states with visual feedback
 - Created glassmorphism design system

@@ -93,7 +93,7 @@
 **Type**: Design Improvements
 
 #### 🏠 Homepage Updates
-- **New Tagline**: "The Adventures of Space Weather: From the Fiery Sun to Our Blue Planet"
+- **New Tagline**: "The Adventurous Exploration of Space Weather"
 - **Better Messaging**: More descriptive and engaging
 - **Visual Hierarchy**: Improved content flow
 

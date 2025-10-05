@@ -38,13 +38,22 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
 
     const audio = audioRef.current;
     
-    // Set audio properties for smooth playback
+    // Set audio properties for smooth playback with timeout protection
     audio.loop = true;
-    audio.preload = 'auto';
+    audio.preload = 'metadata'; // Changed from 'auto' to prevent hanging
     audio.volume = isMuted ? 0 : volume;
+    
+    // Add timeout to prevent hanging
+    const loadTimeout = setTimeout(() => {
+      if (audio.readyState < 2) {
+        console.warn('🎵 Audio loading timeout, skipping auto-play');
+        return;
+      }
+    }, 3000); // 3 second timeout
     
     // Handle audio events
     const handleCanPlay = () => {
+      clearTimeout(loadTimeout);
       console.log('🎵 Audio loaded successfully');
       // Auto-play when audio is ready and not muted
       if (isPlaying && !isMuted) {
