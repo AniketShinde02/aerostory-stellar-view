@@ -42,7 +42,6 @@ const Hero = () => {
         
         {/* Main headline */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white animate-fade-in leading-tight" style={{ animationDelay: "0.2s" }}>
-          The Adventures of Space Weather:<br />
           From the Fiery Sun to Our Blue Planet
         </h1>
         
