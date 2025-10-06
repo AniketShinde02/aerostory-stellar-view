@@ -17,7 +17,6 @@ import NotFound from "./pages/NotFound";
 import ChatBot from "./components/ChatBot";
 import BackgroundMusic from "./components/BackgroundMusic";
 import WelcomePopup from "./components/WelcomePopup";
-import RAGDashboard from "./components/RAGDashboard";
 
 // Create optimized query client with caching and error handling
 const queryClient = new QueryClient({
@@ -92,7 +91,6 @@ const App = () => {
             </Routes>
                      <ChatBot />
                      <BackgroundMusic />
-                     <RAGDashboard />
                      {showWelcomePopup && (
                        <WelcomePopup 
                          onClose={handleCloseWelcome}
