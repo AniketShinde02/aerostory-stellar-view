@@ -16,13 +16,13 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
   });
   const [volume, setVolume] = useState(() => {
     const saved = localStorage.getItem('bgMusicVolume');
-    return saved ? parseFloat(saved) : 0.3; // 30% volume default
+    return saved ? parseFloat(saved) : 0.05; // 5% volume default
   });
   const [isMuted, setIsMuted] = useState(() => {
     const saved = localStorage.getItem('bgMusicMuted');
     return saved === 'true';
   });
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -237,13 +237,13 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ className = '' }) => 
                   <input
                     type="range"
                     min="0"
-                    max="0.5"
+                    max="0.3"
                     step="0.01"
                     value={isMuted ? 0 : volume}
                     onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
                     className="w-16 h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-lg"
                     style={{
-                      background: `linear-gradient(to right, #667eea 0%, #667eea ${((isMuted ? 0 : volume) / 0.5) * 100}%, #374151 ${((isMuted ? 0 : volume) / 0.5) * 100}%, #374151 100%)`
+                      background: `linear-gradient(to right, #667eea 0%, #667eea ${((isMuted ? 0 : volume) / 0.3) * 100}%, #374151 ${((isMuted ? 0 : volume) / 0.3) * 100}%, #374151 100%)`
                     }}
                   />
                   <span className="text-xs text-foreground/60 w-8">

@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Zap, Clock, AlertTriangle, Activity, RefreshCw, Calendar, Filter, Search } from "lucide-react";
+import { Zap, Clock, AlertTriangle, Activity, RefreshCw, Calendar, Filter, Search, ExternalLink, Info } from "lucide-react";
 import { useDonkiSolarFlares } from "@/hooks/useNasaApi";
 import ErrorBoundary from "./ErrorBoundary";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface DonkiSectionProps {
   id: string;
@@ -24,8 +24,28 @@ const DonkiSection = ({ id }: DonkiSectionProps) => {
     return today.toISOString().split('T')[0];
   });
   const [isCustomDateRange, setIsCustomDateRange] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
 
   const { data: donkiData, isLoading, error, refetch, isFetching } = useDonkiSolarFlares(startDate, endDate);
+
+  // Auto-refresh every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+      setLastUpdateTime(new Date());
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [refetch]);
+
+  // Handle quick date range selection
+  const handleQuickRange = (days: number) => {
+    const today = new Date();
+    const pastDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
+    setStartDate(pastDate.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+    setIsCustomDateRange(false);
+  };
 
   // Helper to get status color
   const getStatusColor = (status: string) => {
@@ -130,13 +150,29 @@ const DonkiSection = ({ id }: DonkiSectionProps) => {
       <div className="container mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="text-center mb-8 xs:mb-10 sm:mb-12 lg:mb-16">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-glow leading-tight mb-3 xs:mb-4">
-            Solar Flare Activity
-          </h2>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-glow leading-tight">
+              Solar Flare Activity
+            </h2>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-xs text-green-400 font-mono">LIVE</span>
+            </div>
+          </div>
           <p className="text-base xs:text-lg lg:text-xl text-foreground/80 leading-relaxed max-w-3xl mx-auto">
             Real-time solar flare data from NASA's DONKI (Database of Notification of Knowledge Items) system. 
             Track solar activity and space weather events as they happen.
           </p>
+          <div className="mt-4 flex items-center justify-center gap-4 text-sm text-foreground/60">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              <span>Last updated: {lastUpdateTime.toLocaleTimeString()}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <RefreshCw className="w-4 h-4" />
+              <span>Auto-refresh: 5min</span>
+            </div>
+          </div>
         </div>
 
         {/* Status Overview */}
@@ -203,26 +239,38 @@ const DonkiSection = ({ id }: DonkiSectionProps) => {
             {/* Quick Date Presets */}
             <div className="flex flex-col gap-2">
               <Label className="text-sm text-foreground/70">Quick Filters</Label>
-              <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
-                  variant={!isCustomDateRange ? "default" : "outline"}
+                  variant={!isCustomDateRange && startDate === new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] ? "default" : "outline"}
                   size="sm"
-                  onClick={() => {
-                    setIsCustomDateRange(false);
-                    const today = new Date();
-                    setEndDate(today.toISOString().split('T')[0]);
-                    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    setStartDate(sevenDaysAgo.toISOString().split('T')[0]);
-                  }}
+                  onClick={() => handleQuickRange(7)}
+                  className="text-xs"
                 >
-                  Last 7 Days
+                  7 Days
+                </Button>
+                <Button
+                  variant={!isCustomDateRange && startDate === new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleQuickRange(30)}
+                  className="text-xs"
+                >
+                  30 Days
+                </Button>
+                <Button
+                  variant={!isCustomDateRange && startDate === new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleQuickRange(90)}
+                  className="text-xs"
+                >
+                  90 Days
                 </Button>
                 <Button
                   variant={isCustomDateRange ? "default" : "outline"}
                   size="sm"
                   onClick={() => setIsCustomDateRange(true)}
+                  className="text-xs"
                 >
-                  Custom Range
+                  Custom
                 </Button>
               </div>
             </div>
@@ -354,6 +402,36 @@ const DonkiSection = ({ id }: DonkiSectionProps) => {
                         </span>
                       </div>
                     )}
+                    
+                    {/* Real-time Impact Information */}
+                    <div className="mt-3 pt-3 border-t border-primary/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Info className="w-3 h-3 text-blue-400" />
+                        <span className="text-xs font-semibold text-blue-400">Impact Analysis</span>
+                      </div>
+                      <div className="text-xs text-foreground/80 leading-relaxed">
+                        {flare.classType && flare.classType.includes('X') ? (
+                          <>This X-class flare has significant space weather impact. It can cause radio blackouts, disrupt GPS signals, and create stunning auroras visible at lower latitudes. Power grid operators monitor these events closely.</>
+                        ) : flare.classType && flare.classType.includes('M') ? (
+                          <>This M-class flare causes moderate radio blackouts and minor GPS disruptions. Auroras may be visible in northern regions. Solar activity is elevated during this period.</>
+                        ) : (
+                          <>This C-class flare has minimal Earth impact. It's part of normal solar activity cycles. Radio communications may experience brief, minor disturbances.</>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Action Button */}
+                    <div className="mt-3 pt-3 border-t border-primary/20">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs"
+                        onClick={() => window.open(`https://www.spaceweatherlive.com/en/solar-activity/solar-flares`, '_blank')}
+                      >
+                        <ExternalLink className="w-3 h-3 mr-1" />
+                        View Details
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}

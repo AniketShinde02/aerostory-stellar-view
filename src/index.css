@@ -107,6 +107,25 @@ All colors MUST be HSL.
     text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
   }
 
+  /* Improved hover text visibility */
+  .hover-text-white {
+    @apply hover:text-white transition-colors duration-200;
+  }
+  
+  .hover-text-white-important {
+    @apply hover:!text-white transition-colors duration-200;
+  }
+
+  /* Better button hover states */
+  .btn-hover-white {
+    @apply text-foreground hover:text-white hover:bg-primary/20 transition-all duration-200;
+  }
+
+  /* Improved link hover states */
+  .link-hover-white {
+    @apply text-foreground/80 hover:text-white transition-colors duration-200;
+  }
+
   /* New gradient utility classes */
   .text-gradient {
     background: var(--gradient-text);

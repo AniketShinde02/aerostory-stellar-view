@@ -64,37 +64,37 @@ const Navigation = () => {
                 <div className="hidden md:flex items-center gap-3 lg:gap-4">
                   <button
                     onClick={() => navigateToSection("hero")}
-                    className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
+                    className="text-white/90 hover:text-white hover:bg-white/10 px-3 py-1 rounded-full transition-all duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
                   >
                     Home
                   </button>
                   <button
                     onClick={() => navigateToSection("apod-daily-image")}
-                    className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
+                    className="text-white/90 hover:text-white hover:bg-white/10 px-3 py-1 rounded-full transition-all duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
                   >
                     Daily Image
                   </button>
                   <button
                     onClick={() => navigateToSection("space-weather-impact")}
-                    className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
+                    className="text-white/90 hover:text-white hover:bg-white/10 px-3 py-1 rounded-full transition-all duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
                   >
                     Impact
                   </button>
                   <button
                     onClick={() => navigateToSection("donki-solar-flares")}
-                    className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
+                    className="text-white/90 hover:text-white hover:bg-white/10 px-3 py-1 rounded-full transition-all duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
                   >
                     Solar Flares
                   </button>
                   <Link
                     to="/stories"
-                    className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
+                    className="text-white/90 hover:text-white hover:bg-white/10 px-3 py-1 rounded-full transition-all duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
                   >
                     Stories
                   </Link>
                   <Link
                     to="/resources"
-                    className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
+                    className="text-white/90 hover:text-white hover:bg-white/10 px-3 py-1 rounded-full transition-all duration-200 font-medium text-xs lg:text-sm whitespace-nowrap"
                   >
                     Resources
                   </Link>
@@ -115,38 +115,38 @@ const Navigation = () => {
               <div className="md:hidden mt-3 bg-white/5 backdrop-blur-xl border border-white/30 rounded-2xl p-4 space-y-2 w-full max-w-sm mx-auto">
                 <button
                   onClick={() => navigateToSection("hero")}
-                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors font-medium text-sm"
+                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 font-medium text-sm"
                 >
                   Home
                 </button>
                 <button
                   onClick={() => navigateToSection("apod-daily-image")}
-                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors font-medium text-sm"
+                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 font-medium text-sm"
                 >
                   Daily Image
                 </button>
                 <button
                   onClick={() => navigateToSection("space-weather-impact")}
-                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors font-medium text-sm"
+                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 font-medium text-sm"
                 >
                   Impact
                 </button>
                 <button
                   onClick={() => navigateToSection("donki-solar-flares")}
-                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors font-medium text-sm"
+                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 font-medium text-sm"
                 >
                   Solar Flares
                 </button>
                 <Link
                   to="/stories"
-                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors font-medium text-sm"
+                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 font-medium text-sm"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Stories
                 </Link>
                 <Link
                   to="/resources"
-                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors font-medium text-sm"
+                  className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 font-medium text-sm"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Resources

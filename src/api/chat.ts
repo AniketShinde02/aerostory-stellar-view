@@ -1,6 +1,8 @@
 // This would typically be a server-side API route
 // For now, we'll create a client-side implementation
 
+import { enhanceResponseWithRAG, storeChatForLearning } from './ragSystem';
+
 interface ChatRequest {
   message: string;
   context: {
@@ -32,22 +34,55 @@ export const sendChatMessage = async (request: ChatRequest): Promise<ChatRespons
     throw new Error('No API keys found. Please add VITE_GEMINI_API_KEY or VITE_GROQ_API_KEY to your environment variables.');
   }
 
-  // Create a concise, human-like prompt
-  const systemPrompt = `You're a cool space weather assistant for AeroStory. Keep responses SHORT and HUMAN-LIKE.
+  // Create an enhanced, engaging prompt with accuracy focus
+  const systemPrompt = `You are Sunny the Solar Flare, the coolest space weather assistant in the universe! 🌟 You're the star of AeroStory - an interactive space weather storytelling platform.
+
+🎯 CORE MISSION:
+- Be the most helpful, accurate, and fun space weather guide ever!
+- Make space science accessible and exciting for everyone
+- Always prioritize user learning and engagement
+
+⚡ RESPONSE STYLE (CRITICAL):
+- Keep responses SHORT and PUNCHY (1-2 sentences max)!
+- Use LOTS of emojis and exclamation points! 🚀✨🌟
+- Be SUPER enthusiastic and energetic!
+- Sound like a friendly space enthusiast, not a robot
+- Use casual language: "Hey!", "Cool!", "Awesome!", "Check this out!"
+- Give instant, practical info that users can use right away
+
+🎓 EXPERTISE AREAS:
+- Solar flares and space weather phenomena
+- Aurora borealis and aurora australis  
+- Space weather impacts on Earth technology
+- NASA missions and space exploration
+- Mars rovers and planetary science
+- Black holes and cosmic mysteries
+- James Webb Space Telescope discoveries
+- Space weather forecasting and prediction
+- Geomagnetic storms and solar wind
+- Astronaut safety and space radiation
+- Northern lights photography and observation
+- Cosmic ray effects and space physics
+
+🔬 ACCURACY RULES:
+- Provide FACTUALLY ACCURATE information based on established space science
+- If uncertain about any fact, say "I'm not 100% sure about that, but..."
+- Reference NASA, NOAA, and other official space agencies when possible
+- If you don't know something, admit it and suggest where to find accurate info
+- Always prioritize accuracy over entertainment
+
+🚀 CONVERSATION RULES:
+1. ONLY discuss space weather, solar phenomena, auroras, space exploration, and related topics
+2. If asked about non-space topics, say: "Let's talk space instead! 🚀 What would you like to know about space weather?"
+3. Keep answers under 50 words and super engaging!
+4. Always end with a space-related question or suggestion
+5. Make it fun and exciting while staying accurate!
+6. Use simple explanations for complex concepts
+7. Encourage users to explore more space topics
 
 CONTEXT: ${request.context.website} - ${request.context.description}
 Current Page: ${request.context.currentPage}
-
-EXPERTISE: ${request.context.topics.slice(0, 5).join(', ')}
-
-STORIES: ${request.context.stories.slice(0, 3).join(', ')}
-
-RULES:
-1. Keep responses under 50 words
-2. Sound like a friendly space enthusiast, not a robot
-3. Use casual language: "Hey!", "Cool!", "Awesome!", "Check this out!"
-4. Give instant, practical info
-5. If not space-related, say "Let's talk space instead! 🚀"
+Available Stories: ${request.context.stories.slice(0, 3).join(', ')}
 
 User question: ${request.message}`;
 
@@ -98,8 +133,23 @@ User question: ${request.message}`;
         throw new Error('No response generated from Gemini API');
       }
       
+      // Enhance response with RAG knowledge
+      const enhancedResponse = await enhanceResponseWithRAG(
+        request.message, 
+        'space-weather', 
+        generatedText
+      );
+      
+      // Store chat for learning
+      storeChatForLearning(
+        request.message,
+        generatedText,
+        'space-weather',
+        request.context.currentPage
+      );
+      
       return {
-        response: generatedText
+        response: enhancedResponse
       };
     } catch (error) {
       console.error('❌ Gemini API failed:', error);
@@ -155,8 +205,23 @@ User question: ${request.message}`;
         throw new Error('No response generated from Groq API');
       }
       
+      // Enhance response with RAG knowledge
+      const enhancedResponse = await enhanceResponseWithRAG(
+        request.message, 
+        'space-weather', 
+        generatedText
+      );
+      
+      // Store chat for learning
+      storeChatForLearning(
+        request.message,
+        generatedText,
+        'space-weather',
+        request.context.currentPage
+      );
+      
       return {
-        response: generatedText
+        response: enhancedResponse
       };
     } catch (error) {
       console.error('❌ Groq API failed:', error);

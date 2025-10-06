@@ -224,8 +224,8 @@ const Stories = () => {
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20"></div>
-        </div>
-        
+          </div>
+
         <div className="container mx-auto max-w-7xl px-4 relative">
           {/* Story Card */}
           <div className="flex justify-center">
@@ -291,7 +291,7 @@ const Stories = () => {
                               <span className="font-medium">{story.author}</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm">
-                              <span>{story.readTime}</span>
+                                  <span>{story.readTime}</span>
                               <span>•</span>
                               <span>{story.date}</span>
                             </div>
@@ -320,8 +320,8 @@ const Stories = () => {
                               <Button className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary/90 text-white font-semibold px-10 py-4 text-lg transition-all duration-300 hover:scale-105 group/btn shadow-lg hover:shadow-xl hover:shadow-primary/25">
                                 <span>Start Adventure</span>
                                 <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                              </Button>
-                            </Link>
+                                </Button>
+                              </Link>
                           </div>
                         </div>
                       </div>
@@ -329,8 +329,8 @@ const Stories = () => {
                   </Card>
                 );
               })}
+              </div>
             </div>
-          </div>
         </div>
       </section>
 

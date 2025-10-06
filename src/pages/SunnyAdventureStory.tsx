@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, X, ExternalLink, Play } from 'lucide-react';
+import { ArrowLeft, X, ExternalLink, Play, MessageCircle, BookOpen, Sparkles } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { seoConfigs } from '@/components/SEO';
+import ShareButton from '@/components/ShareButton';
+import InteractiveStoryReader from '@/components/InteractiveStoryReader';
+import { sunnyAdventureStory } from '@/data/sunnyAdventureStory';
 
 const SunnyAdventureStory: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [selectedStory, setSelectedStory] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showInteractiveReader, setShowInteractiveReader] = useState(false);
 
   // Set video to start at 11 seconds when loaded
   useEffect(() => {
@@ -610,31 +614,31 @@ it's me — Sunny — saying hello from the Sun!" 🌞👋`
               {story.title}
             </h1>
 
-              </div>
-            </div>
+          </div>
+        </div>
       </section>
 
       {/* Video Section */}
       <section className="pb-8">
         <div className="container mx-auto max-w-5xl px-4">
           <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl overflow-hidden shadow-2xl">
-            <video 
-              ref={videoRef}
-              width="100%" 
-              height="100%" 
-              controls
-              preload="metadata"
-              className="w-full h-full"
-            >
+                <video 
+                  ref={videoRef}
+                  width="100%" 
+                  height="100%" 
+                  controls
+                  preload="metadata"
+                  className="w-full h-full"
+                >
               <source src="https://ik.imagekit.io/introvertani26/captioncraft_uploads/Nasa%20clip/OrbitX%20team%20_%20Nasa%20space%20apps%202025%20_%20stellar%20stories%C2%A0challenge%20_%20project%202(1080P_HD)%20(1).mp4?updatedAt=1759617096031" type="video/mp4" />
-              <p className="text-center text-foreground/70 p-8">
-                Your browser doesn't support HTML5 video. 
+                  <p className="text-center text-foreground/70 p-8">
+                    Your browser doesn't support HTML5 video. 
                 <a href="https://ik.imagekit.io/introvertani26/captioncraft_uploads/Nasa%20clip/OrbitX%20team%20_%20Nasa%20space%20apps%202025%20_%20stellar%20stories%C2%A0challenge%20_%20project%202(1080P_HD)%20(1).mp4?updatedAt=1759617096031" className="text-primary hover:underline">
-                  Download the video
-                </a>
-              </p>
-            </video>
-          </div>
+                      Download the video
+                    </a>
+                  </p>
+                </video>
+              </div>
         </div>
       </section>
 
@@ -669,7 +673,7 @@ it's me — Sunny — saying hello from the Sun!" 🌞👋`
                   <h3 className="text-lg font-semibold text-white group-hover:text-primary transition-colors duration-300">
                     {point.title}
                   </h3>
-                  </div>
+              </div>
 
                 {/* Card Image */}
                 <div className="relative mb-4 overflow-hidden rounded-lg">
@@ -683,28 +687,46 @@ it's me — Sunny — saying hello from the Sun!" 🌞👋`
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-                </div>
+            </div>
 
                 {/* Card Description */}
                 <p className="text-foreground/80 leading-relaxed text-sm mb-4">
                   {point.description}
                 </p>
 
-                {/* Read More Button */}
-                <div className="flex items-center justify-between">
-                  <div 
-                    className="bg-primary/10 border border-primary/30 text-primary px-4 py-2 rounded-lg transition-all duration-300 group/btn cursor-pointer hover:bg-primary/20 hover:border-primary/50"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleStoryClick(point);
-                    }}
-                  >
-                    <Play className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform duration-300 inline" />
-                    Read Story
+                {/* Interactive Story Buttons */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <div 
+                      className="bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 text-orange-400 px-4 py-2 rounded-lg transition-all duration-300 group/btn cursor-pointer hover:from-orange-500/30 hover:to-red-500/30 hover:border-orange-500/50 hover:text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowInteractiveReader(true);
+                      }}
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform duration-300 inline" />
+                      Interactive Story with Sunny
+                    </div>
+                    <span className="text-xs text-foreground/60 group-hover:text-foreground/80 transition-colors duration-300">
+                      Voice & Chat
+                    </span>
                   </div>
-                  <span className="text-xs text-foreground/60 group-hover:text-foreground/80 transition-colors duration-300">
-                    Click to explore
-                  </span>
+                  
+                  <div className="flex items-center justify-between">
+                    <div 
+                      className="bg-primary/10 border border-primary/30 text-primary px-4 py-2 rounded-lg transition-all duration-300 group/btn cursor-pointer hover:bg-primary/20 hover:border-primary/50 hover:text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStoryClick(point);
+                      }}
+                    >
+                      <BookOpen className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform duration-300 inline" />
+                      Traditional Reading
+                    </div>
+                    <span className="text-xs text-foreground/60 group-hover:text-foreground/80 transition-colors duration-300">
+                      Click to explore
+                    </span>
+                  </div>
                       </div>
                     </div>
                   ))}
@@ -742,19 +764,16 @@ it's me — Sunny — saying hello from the Sun!" 🌞👋`
                     <h2 className="text-2xl font-bold text-white">{selectedStory.title}</h2>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-transparent border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Share
-                    </Button>
+                    <ShareButton 
+                      title="Sunny's Solar Flare Adventure"
+                      text="Check out this amazing space weather story about Sunny the Solar Flare!"
+                      className="flex-shrink-0"
+                    />
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={closeModal}
-                      className="bg-transparent border-primary/30 text-primary hover:bg-primary/10"
+                      className="bg-transparent border-primary/30 text-primary hover:bg-primary/20 hover:text-white hover:border-primary transition-all duration-200"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Close
@@ -813,6 +832,15 @@ it's me — Sunny — saying hello from the Sun!" 🌞👋`
             )}
           </div>
         </div>
+      )}
+
+      {/* Interactive Story Reader Modal */}
+      {showInteractiveReader && (
+        <InteractiveStoryReader
+          story={sunnyAdventureStory}
+          title="Sunny's Solar Flare Adventure"
+          onClose={() => setShowInteractiveReader(false)}
+        />
       )}
     </div>
   );

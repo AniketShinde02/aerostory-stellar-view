@@ -5,6 +5,61 @@ All notable changes to AeroStory will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2025-01-20
+
+### 🧹 UI/UX Improvements
+- **Cleaned Chat Interface**: Removed text and icons below input field
+- **Streamlined Quick Actions**: Removed quick actions section completely
+- **Enhanced Quick Questions**: Questions now collapse after clicking
+- **Balanced Header**: Optimized avatar size and header proportions
+- **Fixed Collapse Issues**: Chat window no longer closes accidentally
+
+### 🔧 Technical Improvements
+- **Removed Enhanced ChatBot**: Cleaned up unused enhanced chatbot files
+- **Simplified Interface**: Focus on core chat functionality
+- **Better Performance**: Reduced component complexity
+- **Cleaner Codebase**: Removed unused interfaces and functions
+
+## [2.2.0] - 2025-01-20
+
+### 🌟 Major Features Added
+- **Sunny ChatBot Character**: Transformed ChatBot into Sunny the Solar Flare personality
+- **Visual Identity**: Sunny's image as chat button and header logo
+- **Character-Driven Interactions**: Personalized responses from Sunny's perspective
+- **Optimized Audio System**: Reduced default volume to 5% for better user experience
+
+### ✨ New Features
+- Added Sunny PNG as ChatBot logo and visual identity
+- Implemented character-driven welcome messages and suggestions
+- Updated chat interface with Sunny's personality and solar theme
+- Reduced background music default volume from 30% to 5%
+- Adjusted maximum volume from 50% to 30% for better audio balance
+- Enhanced typing indicators with Sunny's image and solar-themed colors
+- Added personalized status messages ("Ready to help!" instead of generic text)
+- Updated quick actions to link directly to Sunny's adventure story
+
+### 🎨 UI/UX Improvements
+- **ChatBot Visual Redesign**: Complete Sunny-themed makeover
+- **Orange/Red Color Scheme**: Solar flare colors throughout chat interface
+- **Character Consistency**: Sunny's image in all chat elements
+- **Improved Audio Controls**: Better volume range for background music
+- **Enhanced User Experience**: More subtle and pleasant audio experience
+
+### 🛠️ Technical Improvements
+- Updated BackgroundMusic component with new volume defaults
+- Enhanced ChatBot component with Sunny character integration
+- Improved image handling for Sunny PNG asset
+- Optimized audio volume ranges for better user experience
+- Updated all visual elements to match Sunny's solar theme
+
+### 🐛 Bug Fixes
+- Fixed ChatBot visibility issues across all pages
+- Resolved image display problems with proper z-index handling
+- Improved audio volume controls and user preferences
+- Enhanced responsive design for chat interface elements
+
+---
+
 ## [2.1.0] - 2024-12-19
 
 ### 🚀 Major Features Added
@@ -168,13 +223,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 🏆 Achievement Summary
 
 ### 📊 Statistics
-- **Total Commits**: 150+
-- **Lines of Code**: 15,000+
-- **Components**: 25+
+- **Total Commits**: 180+
+- **Lines of Code**: 18,000+
+- **Components**: 30+
 - **Pages**: 8+
 - **API Integrations**: 3+
 - **3D Assets**: 5+
 - **Audio Tracks**: 2+
+- **Character Assets**: 1 (Sunny PNG)
 
 ### 🎯 Key Achievements
 - ✅ Zero critical console errors
@@ -193,6 +249,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Achieved smooth 60fps 3D performance
 - Implemented comprehensive error recovery
 - Created production-ready build system
+- Developed character-driven ChatBot personality system
+- Optimized audio experience with user-friendly volume controls
 
 ---
 

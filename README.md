@@ -29,15 +29,18 @@
 - **Space Weather Visualization**: See how solar activity affects planets
 - **WebGL Optimized**: Smooth performance across all devices
 
-### 🤖 AI-Powered Chat Assistant
+### 🤖 Sunny the Solar Flare Chat Assistant
+- **Character-Driven**: Sunny, your friendly solar flare companion
 - **Smart Responses**: Context-aware space weather information
 - **Dual API Support**: Gemini AI + Groq for reliable responses
-- **Quick Actions**: Navigate and explore with one click
+- **Quick Questions**: Smart suggestions that collapse after clicking
+- **Clean Interface**: Streamlined chat experience
+- **Personality**: Sunny's cosmic adventures and solar flare expertise
 
 ### 🎵 Dynamic Background Music
 - **Love Story**: Epic orchestral music for main pages
 - **Interstellar Theme**: Immersive soundtrack for AeroVerse
-- **Smart Volume Control**: 30% default, up to 50% maximum
+- **Smart Volume Control**: 5% default, up to 30% maximum
 - **Persistent Settings**: Remembers your preferences
 
 ### 📱 Modern UI/UX
@@ -147,7 +150,7 @@ aerostory-stellar-view/
 
 ### Music Controls
 - **Play/Pause**: Toggle background music
-- **Volume**: Adjust from 0% to 50%
+- **Volume**: Adjust from 0% to 30%
 - **Mute**: Quick mute toggle
 - **Hide/Show**: Collapse music panel
 
@@ -174,11 +177,13 @@ npm run type-check   # TypeScript checking
 
 ## 🌟 Key Features Deep Dive
 
-### AI Chat Assistant
+### Sunny Chat Assistant
+- **Character Personality**: Sunny the Solar Flare as your guide
 - **Context-Aware**: Understands current page and content
 - **Dual API**: Gemini AI primary, Groq fallback
 - **Smart Suggestions**: Proactive question prompts
 - **Error Handling**: Graceful fallbacks for API issues
+- **Visual Identity**: Sunny's image as chat button and header logo
 
 ### 3D Space Experience
 - **Realistic Textures**: High-quality planet surfaces

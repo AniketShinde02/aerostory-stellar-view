@@ -24,6 +24,7 @@ import {
   Zap,
   Star,
   ChevronRight,
+  ChevronDown,
   Eye,
   EyeOff,
   Heart,
@@ -42,18 +43,10 @@ interface Message {
   timestamp: Date;
   isError?: boolean;
   suggestions?: string[];
-  quickActions?: QuickAction[];
   richContent?: RichContent;
   isTyping?: boolean;
 }
 
-interface QuickAction {
-  id: string;
-  label: string;
-  icon: React.ComponentType<any>;
-  action: string;
-  color?: string;
-}
 
 interface RichContent {
   type: 'story' | 'image' | 'link' | 'video' | 'nasa-image' | 'story-preview';
@@ -76,7 +69,7 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hi there! ☀️ I'm Sunny, your friendly solar flare! I love traveling from the Sun to Earth and creating beautiful auroras. Ask me anything about my cosmic adventures, space weather, or how I affect life on your planet!",
+      content: "Hi there! ☀️ I'm Sunny, your friendly solar flare! I love traveling from the Sun to Earth and creating beautiful auroras. Ask me anything about my cosmic adventures, space weather, or how I affect life on your planet!\n\n⚠️ Note: While I strive for accuracy, please verify important information from official sources like NASA or NOAA.",
       sender: 'bot',
       timestamp: new Date(),
       suggestions: [
@@ -84,10 +77,6 @@ const ChatBot: React.FC = () => {
         "What's happening with solar activity?",
         "How do you create auroras?",
         "What's your favorite part of space?"
-      ],
-      quickActions: [
-        { id: 'stories', label: 'My Adventure Story', icon: BookOpen, action: 'navigate:/sunny-adventure-story', color: 'text-orange-400' },
-        { id: 'aeroverse', label: 'Explore AeroVerse', icon: Globe, action: 'navigate:/aeroverse', color: 'text-purple-400' }
       ]
     }
   ]);
@@ -96,7 +85,7 @@ const ChatBot: React.FC = () => {
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'error'>('connected');
   const [retryCount, setRetryCount] = useState(0);
   const [showQuickQuestions, setShowQuickQuestions] = useState(true);
-  const [showQuickActions, setShowQuickActions] = useState(true);
+  const [quickQuestionsUsed, setQuickQuestionsUsed] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [smartFeatures, setSmartFeatures] = useState<SmartFeature[]>([
     { id: 'suggestions', name: 'Smart Suggestions', icon: Lightbulb, enabled: true },
@@ -181,6 +170,12 @@ const ChatBot: React.FC = () => {
       sender: 'user',
       timestamp: new Date()
     };
+    
+    // Reset quick questions if this is a new conversation
+    if (messages.length === 0) {
+      setQuickQuestionsUsed(false);
+      setShowQuickQuestions(true);
+    }
 
     setMessages(prev => [...prev, userMessage]);
     if (!messageContent) {
@@ -315,19 +310,11 @@ const ChatBot: React.FC = () => {
   const handleQuickQuestion = (question: string) => {
     setInputValue(question);
     handleSendMessage(question); // Pass the question directly to avoid race condition
+    // Hide quick questions section after clicking
+    setQuickQuestionsUsed(true);
+    setShowQuickQuestions(false);
   };
 
-  const handleQuickAction = (action: QuickAction) => {
-    if (action.action.startsWith('navigate:')) {
-      const path = action.action.replace('navigate:', '');
-      window.location.href = path;
-    } else if (action.action.startsWith('topic:')) {
-      const topic = action.action.replace('topic:', '');
-      const question = `Tell me about ${topic.replace('-', ' ')}`;
-      setInputValue(question);
-      handleSendMessage(question); // Pass the question directly to avoid race condition
-    }
-  };
 
 
   const generateSmartSuggestions = (userInput: string): string[] => {
@@ -379,39 +366,9 @@ const ChatBot: React.FC = () => {
 
   const enhanceBotResponse = (content: string): Message => {
     const suggestions = generateSmartSuggestions(content);
-    const quickActions: QuickAction[] = [];
     let richContent: RichContent | undefined;
 
-    // Add relevant quick actions based on response content
-    if (content.toLowerCase().includes('story') || content.toLowerCase().includes('stories')) {
-      quickActions.push({
-        id: 'browse-stories',
-        label: 'Browse Stories',
-        icon: BookOpen,
-        action: 'navigate:/stories',
-        color: 'text-blue-400'
-      });
-    }
     
-    if (content.toLowerCase().includes('aeroverse') || content.toLowerCase().includes('3d')) {
-      quickActions.push({
-        id: 'explore-aeroverse',
-        label: 'Explore AeroVerse',
-        icon: Globe,
-        action: 'navigate:/aeroverse',
-        color: 'text-purple-400'
-      });
-    }
-    
-    if (content.toLowerCase().includes('solar') || content.toLowerCase().includes('space weather')) {
-      quickActions.push({
-        id: 'space-weather',
-        label: 'Space Weather',
-        icon: Zap,
-        action: 'topic:space-weather',
-        color: 'text-yellow-400'
-      });
-    }
 
     // Add rich content based on response
     if (content.toLowerCase().includes('nasa') || content.toLowerCase().includes('image of the day')) {
@@ -440,7 +397,6 @@ const ChatBot: React.FC = () => {
       sender: 'bot',
       timestamp: new Date(),
       suggestions,
-      quickActions,
       richContent
     };
   };
@@ -510,7 +466,13 @@ const ChatBot: React.FC = () => {
       {/* Chat Button */}
       {!isOpen && (
         <Button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsOpen(true);
+            // Reset quick questions when opening chat
+            setQuickQuestionsUsed(false);
+            setShowQuickQuestions(true);
+          }}
+          data-chatbot-trigger
           className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-110 p-1"
         >
           <img 
@@ -524,9 +486,9 @@ const ChatBot: React.FC = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-[350px] sm:w-[380px] lg:w-[380px] h-[600px] sm:h-[650px] lg:h-[600px] bg-card/95 backdrop-blur-xl border-primary/20 shadow-2xl transition-all duration-300 overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-primary/20">
+        <Card className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-[350px] sm:w-[380px] lg:w-[380px] h-[600px] sm:h-[650px] lg:h-[600px] bg-card/95 backdrop-blur-xl border-primary/20 shadow-2xl transition-all duration-300 overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+          {/* Balanced Fixed Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-primary/20 bg-card/95 backdrop-blur-xl sticky top-0 z-10 flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className={`w-8 h-8 rounded-full overflow-hidden border-2 ${
                 connectionStatus === 'connected' 
@@ -542,7 +504,7 @@ const ChatBot: React.FC = () => {
                 />
               </div>
               <div>
-                <h3 className="font-semibold text-white">Sunny the Solar Flare</h3>
+                <h3 className="text-sm font-semibold text-white">Sunny the Solar Flare</h3>
                 <div className="flex items-center gap-2">
                   <div className={`w-2 h-2 rounded-full ${
                     connectionStatus === 'connected' 
@@ -577,21 +539,21 @@ const ChatBot: React.FC = () => {
                   <RefreshCw className="w-4 h-4" />
                 </Button>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="text-foreground/70 hover:text-red-400 hover:bg-red-500/10"
-                title="Close Chat"
-              >
-                <X className="w-4 h-4" />
-              </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="text-foreground/70 hover:text-red-400 hover:bg-red-500/10 h-7 w-7 p-0"
+              title="Close Chat"
+            >
+              <X className="w-4 h-4" />
+            </Button>
             </div>
           </div>
 
-          <>
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto max-h-[400px] p-3 space-y-3 scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent">
+            <>
+              {/* Messages Container - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent min-h-0">
                 {messages.map((message) => (
                   <div
                     key={message.id}
@@ -686,83 +648,46 @@ const ChatBot: React.FC = () => {
               </div>
 
               {/* Smart Suggestions */}
-              {messages.length > 0 && messages[messages.length - 1]?.suggestions && (
-                <div className="border-t border-primary/20 bg-card/20">
-                  <div className="flex items-center justify-between p-2">
+              {messages.length > 0 && messages[messages.length - 1]?.suggestions && !quickQuestionsUsed && (
+                <div className="border-t border-primary/20 bg-gradient-to-br from-card/30 to-card/10">
+                  <div className="flex items-center justify-between p-3">
                     <div className="flex items-center gap-2">
-                      <Lightbulb className="w-3 h-3 text-yellow-400" />
-                      <p className="text-xs text-foreground/70 font-medium">Quick questions:</p>
+                      <Lightbulb className="w-4 h-4 text-yellow-400 animate-pulse" />
+                      <p className="text-sm text-foreground/90 font-semibold">Quick questions:</p>
                     </div>
                     <Button
                       onClick={() => setShowQuickQuestions(!showQuickQuestions)}
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0 text-foreground/50 hover:text-foreground/80"
+                      className="h-6 w-6 p-0 text-foreground/50 hover:text-foreground/80 hover:bg-primary/10 transition-all duration-200"
                     >
                       {showQuickQuestions ? (
-                        <ChevronRight className="w-3 h-3 rotate-90" />
+                        <ChevronDown className="w-4 h-4" />
                       ) : (
-                        <ChevronRight className="w-3 h-3" />
+                        <ChevronRight className="w-4 h-4" />
                       )}
                     </Button>
                   </div>
                   {showQuickQuestions && (
-                    <div className="px-2 pb-2">
-                      <div className="flex flex-col gap-1.5">
-                        {messages[messages.length - 1].suggestions?.slice(0, 3).map((suggestion, index) => (
+                    <div className="px-3 pb-3">
+                      <div className="flex flex-col gap-2">
+                        {messages[messages.length - 1].suggestions?.slice(0, 4).map((suggestion, index) => {
+                          const icons = ["🌌", "🛰️", "☀️", "🌌"];
+                          return (
                       <Button
                         key={index}
                         variant="outline"
                         size="sm"
-                            onClick={() => handleQuickQuestion(suggestion)}
-                            className="text-xs border-primary/30 text-primary hover:bg-primary/10 transition-all duration-200 hover:scale-105 h-7 px-2 text-left justify-start w-full overflow-hidden"
-                            title={suggestion}
-                      >
-                            {suggestion.length > 30 ? suggestion.substring(0, 27) + '...' : suggestion}
-                      </Button>
-                    ))}
-                  </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Quick Actions */}
-              {messages.length > 0 && messages[messages.length - 1]?.quickActions && (
-                <div className="border-t border-primary/20 bg-card/10">
-                  <div className="flex items-center justify-between p-2">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-3 h-3 text-purple-400" />
-                      <p className="text-xs text-foreground/70 font-medium">Quick actions:</p>
-                    </div>
-                    <Button
-                      onClick={() => setShowQuickActions(!showQuickActions)}
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0 text-foreground/50 hover:text-foreground/80"
-                    >
-                      {showQuickActions ? (
-                        <ChevronRight className="w-3 h-3 rotate-90" />
-                      ) : (
-                        <ChevronRight className="w-3 h-3" />
-                      )}
-                    </Button>
-                  </div>
-                  {showQuickActions && (
-                    <div className="px-2 pb-2">
-                      <div className="flex gap-2">
-                        {messages[messages.length - 1].quickActions?.slice(0, 2).map((action) => {
-                          const IconComponent = action.icon;
-                          return (
-                            <Button
-                              key={action.id}
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleQuickAction(action)}
-                              className={`text-xs border-primary/30 ${action.color || 'text-primary'} hover:bg-primary/10 transition-all duration-200 hover:scale-105 h-7 px-2 flex-1`}
+                              onClick={() => handleQuickQuestion(suggestion)}
+                              className="text-sm border-primary/30 text-primary hover:bg-gradient-to-r hover:from-primary/20 hover:to-primary/10 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all duration-300 group h-8 px-3 text-left justify-start w-full overflow-hidden"
+                              title={suggestion}
                             >
-                              <IconComponent className="w-3 h-3 mr-1" />
-                              {action.label.length > 12 ? action.label.substring(0, 10) + '...' : action.label}
+                              <span className="mr-2 text-lg group-hover:scale-110 transition-transform duration-200">
+                                {icons[index] || "🌟"}
+                              </span>
+                              <span className="group-hover:text-primary/90 transition-colors duration-200">
+                                {suggestion.length > 30 ? suggestion.substring(0, 27) + '...' : suggestion}
+                              </span>
                             </Button>
                           );
                         })}
@@ -772,8 +697,9 @@ const ChatBot: React.FC = () => {
                 </div>
               )}
 
-              {/* Input */}
-              <div className="p-3 pb-4 border-t border-primary/20">
+
+              {/* Fixed Input Area */}
+              <div className="p-3 border-t border-primary/20 bg-card/95 backdrop-blur-xl flex-shrink-0">
                 <div className="flex gap-2">
                   <Input
                     ref={inputRef}
@@ -793,44 +719,11 @@ const ChatBot: React.FC = () => {
                     <Send className="w-3 h-3" />
                   </Button>
                 </div>
-                <div className="flex items-center justify-between mt-3 pb-1">
-                  <p className="text-xs text-foreground/60 leading-relaxed">
-                    Type your own question or use quick options above!
+                {/* AI Disclaimer */}
+                <div className="mt-2 text-center">
+                  <p className="text-xs text-foreground/50 leading-relaxed">
+                    ⚠️ AI responses may contain inaccuracies. Always verify important information from official sources.
                   </p>
-                  {/* Smart Features Toggle */}
-                  <div className="flex items-center gap-1">
-                    {(showQuickQuestions || showQuickActions) && (
-                      <Button
-                        onClick={() => {
-                          setShowQuickQuestions(false);
-                          setShowQuickActions(false);
-                        }}
-                        variant="ghost"
-                        size="sm"
-                        className="w-6 h-6 p-0 text-foreground/40 hover:text-foreground/80"
-                        title="Hide quick options"
-                      >
-                        <EyeOff className="w-3 h-3" />
-                      </Button>
-                    )}
-                    {smartFeatures.map((feature) => {
-                      const IconComponent = feature.icon;
-                      return (
-                        <Button
-                          key={feature.id}
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setSmartFeatures(prev => prev.map(f => 
-                            f.id === feature.id ? { ...f, enabled: !f.enabled } : f
-                          ))}
-                          className={`w-6 h-6 p-0 ${feature.enabled ? 'text-primary' : 'text-foreground/40'}`}
-                          title={feature.name}
-                        >
-                          <IconComponent className="w-3 h-3" />
-                        </Button>
-                      );
-                    })}
-                  </div>
                 </div>
               </div>
             </>

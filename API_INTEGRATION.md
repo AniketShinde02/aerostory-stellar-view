@@ -2,7 +2,7 @@
 
 ## 🌌 Overview
 
-AeroStory integrates with multiple NASA APIs to provide real-time space weather data, astronomical images, and cosmic phenomena information. This guide covers the implementation, data structures, and best practices for NASA API integration.
+AeroStory integrates with multiple NASA APIs to provide real-time space weather data, astronomical images, and cosmic phenomena information. The platform also features Sunny the Solar Flare as an AI-powered character assistant, providing personalized space weather guidance and educational content. This guide covers the implementation, data structures, and best practices for NASA API integration and character-driven interactions.
 
 ## 🔑 API Keys and Setup
 
@@ -16,6 +16,8 @@ AeroStory integrates with multiple NASA APIs to provide real-time space weather 
 ```env
 # .env file
 VITE_NASA_API_KEY=your_api_key_here
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_GROQ_API_KEY=your_groq_api_key_here
 ```
 
 ### API Base URLs
@@ -23,6 +25,8 @@ VITE_NASA_API_KEY=your_api_key_here
 const NASA_API_BASE = 'https://api.nasa.gov';
 const DONKI_BASE = 'https://api.nasa.gov/DONKI';
 const APOD_BASE = 'https://api.nasa.gov/planetary/apod';
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const GROQ_API_BASE = 'https://api.groq.com/openai/v1';
 ```
 
 ## 📊 Integrated APIs
@@ -222,6 +226,158 @@ const fetchSpaceWeather = async () => {
     timestamp: new Date().toISOString(),
   };
 };
+```
+
+## 🤖 Sunny ChatBot Character System
+
+### Character Integration
+The ChatBot has been transformed into Sunny the Solar Flare, a character-driven AI assistant that provides personalized space weather guidance.
+
+### Character Identity
+```typescript
+interface SunnyCharacter {
+  name: string;
+  personality: {
+    greeting: string;
+    expertise: string;
+    enthusiasm: string;
+  };
+  visualIdentity: {
+    image: string; // Sunny.png
+    colorScheme: 'orange-red';
+    theme: 'solar-flare';
+  };
+  capabilities: string[];
+}
+
+const sunnyCharacter: SunnyCharacter = {
+  name: "Sunny the Solar Flare",
+  personality: {
+    greeting: "Hi there! ☀️ I'm Sunny, your friendly solar flare!",
+    expertise: "I love traveling from the Sun to Earth and creating beautiful auroras.",
+    enthusiasm: "Ask me anything about my cosmic adventures, space weather, or how I affect life on your planet!"
+  },
+  visualIdentity: {
+    image: "src/assets/Sunny.png",
+    colorScheme: "orange-red",
+    theme: "solar-flare"
+  },
+  capabilities: [
+    "Space weather explanations",
+    "Solar flare journey guidance", 
+    "Aurora formation education",
+    "Cosmic adventure storytelling"
+  ]
+};
+```
+
+### AI API Integration for Character Responses
+```typescript
+// Gemini AI integration with Sunny's personality
+const generateSunnyResponse = async (userInput: string): Promise<string> => {
+  const prompt = `
+You are Sunny the Solar Flare, a friendly and enthusiastic character who loves to share knowledge about space weather and cosmic adventures.
+
+Character traits:
+- Friendly and approachable
+- Passionate about solar flares and auroras
+- Loves to tell stories about cosmic journeys
+- Educational but fun
+- Uses solar flare terminology naturally
+
+User question: ${userInput}
+
+Respond as Sunny with enthusiasm and expertise about space weather phenomena.
+  `;
+
+  const response = await fetch(`${GEMINI_API_BASE}/models/gemini-1.5-flash-001:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contents: [{
+        parts: [{
+          text: prompt
+        }]
+      }]
+    })
+  });
+
+  return response.json();
+};
+
+// Groq API fallback with Sunny's personality
+const generateSunnyResponseFallback = async (userInput: string): Promise<string> => {
+  const response = await fetch(`${GROQ_API_BASE}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${groqApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: "llama3-8b-8192",
+      messages: [
+        {
+          role: "system",
+          content: "You are Sunny the Solar Flare, a friendly character who loves space weather and cosmic adventures. Be enthusiastic and educational."
+        },
+        {
+          role: "user", 
+          content: userInput
+        }
+      ]
+    })
+  });
+
+  return response.json();
+};
+```
+
+### Character-Driven UI Elements
+```typescript
+// Sunny-themed visual components
+const SunnyChatButton = () => (
+  <Button className="bg-gradient-to-r from-orange-500 to-red-500">
+    <img 
+      src={SunnyImage} 
+      alt="Sunny the Solar Flare" 
+      className="w-full h-full rounded-full object-cover"
+    />
+  </Button>
+);
+
+const SunnyHeader = () => (
+  <div className="flex items-center gap-3">
+    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-orange-500">
+      <img 
+        src={SunnyImage} 
+        alt="Sunny the Solar Flare" 
+        className="w-full h-full object-cover"
+      />
+    </div>
+    <div>
+      <h3 className="font-semibold text-white">Sunny the Solar Flare</h3>
+      <p className="text-xs text-foreground/70">Ready to help!</p>
+    </div>
+  </div>
+);
+
+const SunnyTypingIndicator = () => (
+  <div className="flex items-center gap-2">
+    <img 
+      src={SunnyImage} 
+      alt="Sunny" 
+      className="w-4 h-4 rounded-full object-cover"
+    />
+    <span className="text-sm text-foreground/70">Sunny is typing</span>
+    <div className="flex gap-1">
+      <div className="w-1 h-1 bg-orange-500/60 rounded-full animate-pulse" />
+      <div className="w-1 h-1 bg-orange-500/60 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+      <div className="w-1 h-1 bg-orange-500/60 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+    </div>
+  </div>
+);
 ```
 
 ## 🔧 Error Handling

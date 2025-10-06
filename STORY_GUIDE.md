@@ -2,7 +2,7 @@
 
 ## 📖 Story Types Overview
 
-AeroStory offers multiple storytelling experiences, each designed to engage users with different levels of interactivity and immersion.
+AeroStory offers multiple storytelling experiences, each designed to engage users with different levels of interactivity and immersion. The platform is enhanced by Sunny the Solar Flare, our friendly character guide who helps users navigate and understand the cosmic stories.
 
 ## 🎯 Story Categories
 
@@ -42,17 +42,57 @@ AeroStory offers multiple storytelling experiences, each designed to engage user
 
 **Example**: `/immersive-story/cosmic-journey`
 
-### ☀️ Solar Flare Journey
-**Purpose**: Educational narrative with step-by-step demonstrations
-**Best For**: Learning about space weather phenomena
+### ☀️ Sunny's Solar Flare Adventure
+**Purpose**: Educational narrative featuring Sunny the Solar Flare character
+**Best For**: Learning about space weather phenomena with character guidance
 **Features**:
-- 5-stage cosmic journey (Sun → Space → Astronauts → Earth → Aurora)
+- Sunny's personal journey from Sun to Earth
 - Interactive particle demonstrations
 - Real-time physics simulations
 - Educational content with scientific accuracy
-- Progress tracking and impact summaries
+- Character-driven storytelling with Sunny's perspective
+- Video integration showing Sunny's cosmic adventure
+- Point-to-point information layout for easy learning
 
-**Example**: `/solar-flare-story/solar-flare-journey`
+**Example**: `/sunny-adventure-story`
+
+**Character Integration**:
+- Sunny's image prominently displayed throughout the story
+- Character personality in educational content
+- Personal narrative from Sunny's perspective
+- Direct connection to Sunny ChatBot for questions
+
+## 🤖 Sunny the Solar Flare Character Integration
+
+### Character Identity
+**Name**: Sunny the Solar Flare
+**Personality**: Friendly, enthusiastic, and educational
+**Role**: Cosmic guide and educational companion
+**Visual Identity**: Sunny PNG image used throughout the platform
+
+### Character Features
+- **ChatBot Integration**: Sunny serves as the AI assistant with character-driven responses
+- **Story Guide**: Helps users understand complex space weather concepts
+- **Visual Consistency**: Sunny's image appears in chat buttons, headers, and story pages
+- **Personality-Driven Content**: All interactions reflect Sunny's friendly and educational nature
+
+### Character-Driven Storytelling
+```typescript
+// Sunny's perspective in story content
+const sunnyStoryContent = {
+  introduction: "Hi there! I'm Sunny, and I'm about to take you on an amazing journey through space!",
+  journey: "Follow me as I travel from the Sun to Earth, showing you how solar flares create beautiful auroras!",
+  education: "Let me explain what happens at each stage of my cosmic adventure...",
+  conclusion: "Wasn't that amazing? I love sharing my journey with you!"
+};
+```
+
+### Visual Integration
+- **Chat Button**: Sunny's image as the main chat interface button
+- **Header Logo**: Sunny's image in the chat window header
+- **Story Pages**: Sunny's image prominently displayed in story content
+- **Typing Indicators**: Sunny's image in loading and typing states
+- **Color Scheme**: Orange/red solar flare colors throughout the interface
 
 ## 🎨 Interactive Elements
 
@@ -106,9 +146,10 @@ Each story stage includes atmospheric audio:
 
 ### Audio Controls
 - **Play/Pause**: Toggle audio playback
-- **Volume**: Adjustable volume levels
+- **Volume**: Adjustable volume levels (5% default, 30% maximum)
 - **Mute**: Quick mute functionality
 - **Visual Feedback**: Audio state indicators
+- **Background Music**: Subtle ambiance that doesn't interfere with Sunny's interactions
 
 ## 📱 Responsive Design
 
@@ -152,15 +193,17 @@ Each story teaches specific concepts:
 ## 🎯 User Experience Flow
 
 ### Story Discovery
-1. **Navigation**: Users access stories through the Stories dropdown
+1. **Navigation**: Users access stories through the Stories dropdown or Sunny's recommendations
 2. **Preview**: Story cards show title, author, and brief description
 3. **Selection**: Click to enter the chosen story experience
+4. **Sunny's Guidance**: ChatBot provides personalized story recommendations
 
 ### Story Interaction
 1. **Loading**: Smooth loading with progress indicators
 2. **Engagement**: Interactive elements respond to user input
 3. **Navigation**: Easy movement between sections
-4. **Completion**: Clear end states and related content
+4. **Sunny's Help**: Character provides guidance and explanations
+5. **Completion**: Clear end states and related content
 
 ### Story Sharing
 1. **Social Sharing**: Built-in sharing to social platforms
@@ -190,11 +233,12 @@ ImmersiveStory.tsx     # Full-screen 3D experience
 ├── Audio System      # Ambient sounds
 └── UI Overlay        # Controls and navigation
 
-SolarFlareStory.tsx    # Educational journey
-├── Journey Progress   # Stage tracking
-├── Interactive Stages # Canvas demonstrations
-├── Impact Summary    # Effects visualization
-└── Educational Content # Scientific explanations
+SunnyAdventureStory.tsx # Sunny's character-driven story
+├── Video Integration  # Sunny's cosmic adventure video
+├── Character Image    # Sunny's image display
+├── Key Points        # Educational information
+├── Interactive Elements # Particle systems and effects
+└── Character Content # Sunny's personal narrative
 ```
 
 ### Performance Optimization
